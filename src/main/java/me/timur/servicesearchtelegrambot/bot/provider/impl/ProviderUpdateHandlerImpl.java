@@ -1,8 +1,8 @@
 package me.timur.servicesearchtelegrambot.bot.provider.impl;
 
 import lombok.RequiredArgsConstructor;
-import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.bot.provider.ProviderUpdateHandler;
+import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
 import me.timur.servicesearchtelegrambot.enitity.Provider;
 import me.timur.servicesearchtelegrambot.enitity.ProviderService;
 import me.timur.servicesearchtelegrambot.enitity.Service;

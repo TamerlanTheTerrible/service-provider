@@ -2,10 +2,10 @@ package me.timur.servicesearchtelegrambot.bot.provider.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.timur.servicesearchtelegrambot.bot.client.enums.Command;
-import me.timur.servicesearchtelegrambot.bot.client.enums.Outcome;
 import me.timur.servicesearchtelegrambot.bot.provider.ProviderUpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.provider.ProviderUpdateMapper;
+import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
+import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.beans.factory.annotation.Value;
