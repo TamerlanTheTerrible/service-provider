@@ -1,6 +1,7 @@
 package me.timur.servicesearchtelegrambot.bot.util;
 
 import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
+import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -19,11 +20,13 @@ public class UpdateUtil {
     public static String command(Update update) {
         return Objects.nonNull(update.getMessage())
                 ? update.getMessage().getText()
-                : update.getCallbackQuery().getMessage().getText();
+                : update.getChannelPost().getText();
     }
 
     public static String chatId(Update update) {
-        return update.getMessage().getChatId().toString();
+        return Objects.nonNull(update.getMessage())
+                ? update.getMessage().getChatId().toString()
+                : update.getChannelPost().getChatId().toString();
     }
 
     public static Long tgUserId(Update update) {

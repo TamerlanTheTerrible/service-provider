@@ -71,7 +71,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
     @Override
     public SendMessage handleQuery(Update update) {
-        return message(update.getMessage().getFrom().getId().toString(), update.getMessage().getText());
+        return message(update.getMyChatMember().getChat().getId().toString(), update.getChannelPost().getText());
     }
 
     @Override

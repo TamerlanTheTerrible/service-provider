@@ -34,8 +34,8 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
     private final ChatLogService chatLogService;
     private final ServiceManager serviceManager;
 
-    @Value("${group.service.searcher.id.dev}")
-    private Long serviceSearcherGroupId;
+    @Value("${channel.service.searcher.id.dev}")
+    private Long serviceSearChannelId;
 
     @Override
     public List<BotApiMethod<Message>> map(Update update) {
@@ -57,7 +57,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             final String newCommand = command(update);
             final String lastChatCommand = chatLogService.getLastChatOutcome(update);
             //check if it is from the group
-            if (update.getMessage().isGroupMessage() && Objects.equals(update.getMessage().getChatId(), serviceSearcherGroupId))
+            if (update.getChannelPost() != null && Objects.equals(update.getChannelPost().getChatId(), serviceSearChannelId))
                 sendMessage = updateHandler.handleQuery(update);
             // start command called
             else if (Objects.equals(newCommand, Command.START.getValue()))
