@@ -30,7 +30,7 @@ public class UpdateUtil {
     }
 
     public static Long tgUserId(Update update) {
-        return update.getMessage().getFrom().getId();
+        return update.getMessage() != null ? update.getMessage().getFrom().getId() : -1;
     }
 
     public static UserDTO user(Update update) {

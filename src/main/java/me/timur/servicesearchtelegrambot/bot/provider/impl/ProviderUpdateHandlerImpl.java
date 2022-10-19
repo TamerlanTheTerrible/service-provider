@@ -5,10 +5,12 @@ import me.timur.servicesearchtelegrambot.bot.provider.ProviderUpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
 import me.timur.servicesearchtelegrambot.enitity.Provider;
 import me.timur.servicesearchtelegrambot.enitity.ProviderService;
+import me.timur.servicesearchtelegrambot.enitity.Query;
 import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.repository.ProviderServiceRepository;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
+import me.timur.servicesearchtelegrambot.service.QueryService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,6 +37,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     private final ChatLogService chatLogService;
     private final ServiceManager serviceManager;
     private final ProviderServiceRepository providerServiceRepository;
+    private final QueryService queryService;
 
     @Value("${keyboard.size.row}")
     private Integer keyboardRowSize;
@@ -71,6 +74,15 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
     @Override
     public SendMessage handleQuery(Update update) {
+        String chatText = update.getChannelPost().getText();
+//        Long queryId = Long.valueOf(
+//                chatText.substring(chatText.indexOf("#") + 1, chatText.length())
+//        );
+
+//        Query query = queryService.getById(queryId);
+//        Provider provider = providerManager.getByUserTelegramId(Long.valueOf(chatId(update)));
+//        if (query.getService().getId() == )
+
         return message(update.getMyChatMember().getChat().getId().toString(), update.getChannelPost().getText());
     }
 
