@@ -22,5 +22,5 @@ public interface ProviderUpdateHandler {
 
     SendMessage searchService(Update update);
 
-    SendMessage handleQuery(Update update);
+    List<SendMessage> handleQuery(Update update);
 }

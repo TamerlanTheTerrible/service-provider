@@ -73,17 +73,24 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     }
 
     @Override
-    public SendMessage handleQuery(Update update) {
+    public List<SendMessage> handleQuery(Update update) {
         String chatText = update.getChannelPost().getText();
-//        Long queryId = Long.valueOf(
-//                chatText.substring(chatText.indexOf("#") + 1, chatText.length())
-//        );
+        Long queryId = Long.valueOf(
+                chatText.substring(chatText.indexOf("#") + 1, chatText.length())
+        );
 
-//        Query query = queryService.getById(queryId);
-//        Provider provider = providerManager.getByUserTelegramId(Long.valueOf(chatId(update)));
-//        if (query.getService().getId() == )
+        Query query = queryService.getById(queryId);
+        final List<Provider> providers = providerManager.findAllByService(query.getService());
 
-        return message(update.getMyChatMember().getChat().getId().toString(), update.getChannelPost().getText());
+        List<SendMessage> messages = new ArrayList<>();
+
+        for (Provider provider: providers) {
+            messages.add(
+                    message(provider.getUser().getTelegramId().toString(), "I'm ready for" + queryId)
+            );
+        }
+
+        return messages;
     }
 
     @Override

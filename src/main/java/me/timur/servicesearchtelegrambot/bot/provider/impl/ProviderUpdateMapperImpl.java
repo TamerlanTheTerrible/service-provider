@@ -39,18 +39,14 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
 
     @Override
     public List<BotApiMethod<Message>> map(Update update) {
-        final List<BotApiMethod<Message>> replyList = new ArrayList<>();
 
-        SendMessage sendMessage = tryToMap(update, replyList);
-
-        if (sendMessage != null)
-            replyList.add(sendMessage);
-
-        return replyList;
+        return tryToMap(update);
     }
 
-    private SendMessage tryToMap(Update update, List<BotApiMethod<Message>> replyList) {
+    private List<BotApiMethod<Message>> tryToMap(Update update) {
         final List<String> serviceNames = serviceManager.getActiveServiceNames();
+        final List<BotApiMethod<Message>> replyList = new ArrayList<>();
+
         SendMessage sendMessage = null;
 
         try {
@@ -58,7 +54,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             final String lastChatCommand = chatLogService.getLastChatOutcome(update);
             //check if it is from the group
             if (update.getChannelPost() != null && Objects.equals(update.getChannelPost().getChatId(), serviceSearChannelId))
-                sendMessage = updateHandler.handleQuery(update);
+                replyList.addAll(updateHandler.handleQuery(update));
             // start command called
             else if (Objects.equals(newCommand, Command.START.getValue()))
                 sendMessage = updateHandler.start(update);
@@ -82,6 +78,10 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             log.error(e.getMessage(), e);
             sendMessage = updateHandler.unknownCommand(update);
         }
-        return sendMessage;
+
+        if (sendMessage != null)
+            replyList.add(sendMessage);
+
+        return replyList;
     }
 }
