@@ -90,8 +90,8 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         for (Provider provider: providers) {
             String chatId = provider.getUser().getTelegramId().toString();
             List<String> keyboardTexts = new ArrayList<>();
-            keyboardTexts.add("Принять запрос #" + queryId);
-            keyboardTexts.add("Отказать");
+            keyboardTexts.add(Outcome.ACCEPT_QUERY.getText() + queryId);
+            keyboardTexts.add(Outcome.DENY_QUERY.getText());
             messages.add(keyboard(chatId, chatText, keyboardTexts, keyboardRowSize));
         }
         //send provider id list to channel
@@ -105,6 +105,22 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         messages.add(channelReply);
 
         return messages;
+    }
+
+    @Override
+    public SendMessage acceptQuery(Update update) {
+        String command = command(update);
+        Long queryId = Long.valueOf(
+                command.substring(command.indexOf("#") + 1)
+        );
+
+        Query query = queryService.getById(queryId);
+        return null;
+    }
+
+    @Override
+    public SendMessage denyQuery(Update update) {
+        return null;
     }
 
     @Override
@@ -135,7 +151,6 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         } else {
             providerServiceRepository.save(new ProviderService(provider, service));
             sendMessage = logAndMessage(update, Outcome.PROVIDER_SERVICE_SAVED.getText(), Outcome.PROVIDER_SERVICE_SAVED);
-
         }
         return sendMessage;
     }
