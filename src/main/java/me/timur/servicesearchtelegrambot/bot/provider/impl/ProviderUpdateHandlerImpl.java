@@ -14,12 +14,15 @@ import me.timur.servicesearchtelegrambot.service.QueryService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
@@ -74,21 +77,32 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
     @Override
     public List<SendMessage> handleQuery(Update update) {
+        //get query id from chat text
         String chatText = update.getChannelPost().getText();
-        Long queryId = Long.valueOf(
-                chatText.substring(chatText.indexOf("#") + 1, chatText.length())
+        Long queryId = Long.valueOf(chatText.substring(chatText.indexOf("#") + 1));
+
+        //get providers who can handle the query
+        Query query = queryService.getById(queryId);
+        List<Provider> providers = providerManager.findAllByService(query.getService());
+
+        //prepare notifications for those providers
+        List<SendMessage> messages = new ArrayList<>();
+        for (Provider provider: providers) {
+            String chatId = provider.getUser().getTelegramId().toString();
+            List<String> keyboardTexts = new ArrayList<>();
+            keyboardTexts.add("Принять запрос #" + queryId);
+            keyboardTexts.add("Отказать");
+            messages.add(keyboard(chatId, chatText, keyboardTexts, keyboardRowSize));
+        }
+        //send provider id list to channel
+        SendMessage channelReply = message(
+                update.getChannelPost().getChatId().toString(),
+                "#" + queryId + " provider IDs: " + providers.stream()
+                        .map(p -> String.valueOf(p.getId()))
+                        .collect(Collectors.joining(", "))
         );
 
-        Query query = queryService.getById(queryId);
-        final List<Provider> providers = providerManager.findAllByService(query.getService());
-
-        List<SendMessage> messages = new ArrayList<>();
-
-        for (Provider provider: providers) {
-            messages.add(
-                    message(provider.getUser().getTelegramId().toString(), "I'm ready for" + queryId)
-            );
-        }
+        messages.add(channelReply);
 
         return messages;
     }
