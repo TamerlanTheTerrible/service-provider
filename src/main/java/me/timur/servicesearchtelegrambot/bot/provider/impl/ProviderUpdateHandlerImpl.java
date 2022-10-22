@@ -3,15 +3,14 @@ package me.timur.servicesearchtelegrambot.bot.provider.impl;
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.bot.provider.ProviderUpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
-import me.timur.servicesearchtelegrambot.enitity.Provider;
-import me.timur.servicesearchtelegrambot.enitity.ProviderService;
-import me.timur.servicesearchtelegrambot.enitity.Query;
-import me.timur.servicesearchtelegrambot.enitity.Service;
+import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
+import me.timur.servicesearchtelegrambot.enitity.*;
 import me.timur.servicesearchtelegrambot.repository.ProviderServiceRepository;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
 import me.timur.servicesearchtelegrambot.service.QueryService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
+import org.hibernate.sql.Delete;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -109,13 +108,23 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
     @Override
     public SendMessage acceptQuery(Update update) {
-        String command = command(update);
-        Long queryId = Long.valueOf(
-                command.substring(command.indexOf("#") + 1)
-        );
+        //prepare reply
+        SendMessage message = message(chatId(update), "");
+        message.setReplyMarkup(KeyboardUtil.removeKeyBoard());
 
+        //get query
+        String command = command(update);
+        Long queryId = Long.valueOf(command.substring(command.indexOf("#") + 1));
         Query query = queryService.getById(queryId);
-        return null;
+
+        //finalize reply
+        if (query.getIsActive()) {
+            message.setText("Номер заказчика: " + query.getClient().getPhone());
+        }
+        else
+            message.setText("Клиент закрыл запрос");
+
+        return message;
     }
 
     @Override
