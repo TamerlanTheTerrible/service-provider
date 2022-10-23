@@ -2,6 +2,7 @@ package me.timur.servicesearchtelegrambot.bot.provider.impl;
 
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.bot.provider.ProviderUpdateHandler;
+import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
 import me.timur.servicesearchtelegrambot.enitity.*;
@@ -10,18 +11,15 @@ import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
 import me.timur.servicesearchtelegrambot.service.QueryService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
-import org.hibernate.sql.Delete;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
@@ -89,8 +87,8 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         for (Provider provider: providers) {
             String chatId = provider.getUser().getTelegramId().toString();
             List<String> keyboardTexts = new ArrayList<>();
-            keyboardTexts.add(Outcome.ACCEPT_QUERY.getText() + queryId);
-            keyboardTexts.add(Outcome.DENY_QUERY.getText());
+            keyboardTexts.add(Command.ACCEPT_QUERY.getText() + queryId);
+            keyboardTexts.add(Command.DENY_QUERY.getText());
             messages.add(keyboard(chatId, chatText, keyboardTexts, keyboardRowSize));
         }
         //send provider id list to channel
@@ -129,6 +127,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
     @Override
     public SendMessage denyQuery(Update update) {
+//        return logAndMessage();
         return null;
     }
 
@@ -136,7 +135,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     public SendMessage getServicesByCategoryName(Update update) {
         List<String> servicesNames = serviceManager.getServicesNamesByCategoryName(command(update));
         ArrayList<String> modifiableList = new ArrayList<>(servicesNames);
-        modifiableList.add(Outcome.BACK_TO_CATEGORIES.getText());
+        modifiableList.add(Command.BACK_TO_CATEGORIES.getText());
         return logAndKeyboard(update, command(update), modifiableList, keyboardRowSize, Outcome.SERVICES);
     }
 

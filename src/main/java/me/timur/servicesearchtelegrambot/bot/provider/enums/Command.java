@@ -8,12 +8,16 @@ import lombok.Getter;
 
 @Getter
 public enum Command {
-    START("/start");
+    START("/start"),
+    ACCEPT_QUERY("Принять запрос #"),
+    DENY_QUERY("Отказать"),
+    BACK_TO_CATEGORIES("Все категории")
+    ;
 
-    private final String value;
+    private final String text;
 
     Command(String s) {
-        this.value = s;
+        this.text = s;
     }
 
 }

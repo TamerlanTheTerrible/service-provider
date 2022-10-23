@@ -55,20 +55,20 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             if (update.getChannelPost() != null && Objects.equals(update.getChannelPost().getChatId(), serviceSearChannelId))
                 replyList.addAll(updateHandler.handleQuery(update));
             // start command called
-            else if (Objects.equals(newCommand, Command.START.getValue()))
+            else if (Objects.equals(newCommand, Command.START.getText()))
                 sendMessage = updateHandler.start(update);
             // accept query
-            else if (newCommand.contains(Outcome.ACCEPT_QUERY.getText()))
+            else if (newCommand.contains(Command.ACCEPT_QUERY.getText()))
                 sendMessage = updateHandler.acceptQuery(update);
             // deny query
-            else if (newCommand.equals(Outcome.DENY_QUERY.getText()))
+            else if (newCommand.equals(Command.DENY_QUERY.getText()))
                 sendMessage = updateHandler.denyQuery(update);
             // list of all services required
-            else if (Objects.equals(newCommand, Outcome.CATEGORIES.getText()) || Objects.equals(newCommand, Outcome.BACK_TO_CATEGORIES.getText()) ) {
+            else if (Objects.equals(newCommand, Outcome.CATEGORIES.getText()) || Objects.equals(newCommand, Command.BACK_TO_CATEGORIES.getText()) ) {
                 sendMessage = updateHandler.getCategories(update);
             }
             // list of all services required
-            else if (lastChatCommand.equals(Outcome.CATEGORIES.name()) || lastChatCommand.equals(Outcome.BACK_TO_CATEGORIES.name())) {
+            else if (lastChatCommand.equals(Outcome.CATEGORIES.name()) || lastChatCommand.equals(Command.BACK_TO_CATEGORIES.name())) {
                 sendMessage = updateHandler.getServicesByCategoryName(update);
             }
             // required service found

@@ -14,9 +14,9 @@ public enum Outcome {
     QUERY_SAVED("Ваша заявка принято. С вами свяжутся, как только найдется нужный сервис провайдер"),
     CATEGORIES("Выбрать из общего списка"),
     SERVICES("Выбрать из общего списка"),
-    ACCEPT_QUERY("Принять запрос #"),
-    DENY_QUERY("Отказать"),
-    BACK_TO_CATEGORIES("Все категории"),
+    QUERY_ACCEPTED("Запрос принят"),
+    QUERY_DENIED("Запрос отказан"),
+//    BACK_TO_CATEGORIES("Все категории"),
 
     PROVIDER_SERVICE_ALREADY_EXISTS("Этот сервис у Вас уже зарегистрирован"),
     PROVIDER_SERVICE_SAVED("Сервис сохранён"),
