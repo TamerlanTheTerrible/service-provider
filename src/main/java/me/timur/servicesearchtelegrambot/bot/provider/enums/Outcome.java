@@ -21,6 +21,17 @@ public enum Outcome {
     PROVIDER_SERVICE_SAVED("Сервис сохранён"),
     RECEIVE_QUERY_NOTIFICATION("Запрос"),
 
+    NAME_REQUESTED("Имя фамилия"),
+    PHONE_REQUESTED("Телефонный номер"),
+    COMPANY_NAME_REQUESTED("Название фирмы"),
+    COMPANY_ADDRESS_REQUESTED("Адрес фирмы"),
+    WEBSITE_REQUESTED("Вэб-сайт"),
+    INSTAGRAM_REQUESTED("Инстаграм аккаунт"),
+    TELEGRAM_REQUESTED("Телеграм аккаунт/группа/канал"),
+    CERTIFICATE_REQUESTED("Загрузите сертификат"),
+    COMPANY_INFO_REQUESTED("Напишите немного о компании/деятельности (максимум 255 символов)"),
+    SKIP("➡️Пропустить"),
+
     UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз")
     ;
 

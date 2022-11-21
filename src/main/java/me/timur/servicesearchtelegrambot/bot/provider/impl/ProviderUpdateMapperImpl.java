@@ -54,6 +54,30 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             //check if it is from the group
             if (update.getChannelPost() != null && Objects.equals(update.getChannelPost().getChatId(), serviceSearChannelId))
                 replyList.addAll(updateHandler.handleQuery(update));
+            //if previous request was name, then request phone
+            else if (Objects.equals(lastChatCommand, Outcome.NAME_REQUESTED.name()))
+                sendMessage = updateHandler.requestPhone(update);
+            //if previous request was phone, then request company name
+            else if (Objects.equals(lastChatCommand, Outcome.PHONE_REQUESTED.name()))
+                sendMessage = updateHandler.requestCompanyName(update);
+            //if previous request was company name, then request company address
+            else if (Objects.equals(lastChatCommand, Outcome.COMPANY_NAME_REQUESTED.name()))
+                sendMessage = updateHandler.requestCompanyAddress(update);
+            //if previous request was company address, then request company website
+            else if (Objects.equals(lastChatCommand, Outcome.COMPANY_ADDRESS_REQUESTED.name()))
+                sendMessage = updateHandler.requestWebsite(update);
+            //if previous request was website, then request instagram
+            else if (Objects.equals(lastChatCommand, Outcome.WEBSITE_REQUESTED.name()))
+                sendMessage = updateHandler.requestInstagram(update);
+            //if previous request was instagram, then request telegram
+            else if (Objects.equals(lastChatCommand, Outcome.INSTAGRAM_REQUESTED.name()))
+                sendMessage = updateHandler.requestTelegram(update);
+            //if previous request was telegram, then request certificate
+            else if (Objects.equals(lastChatCommand, Outcome.TELEGRAM_REQUESTED.name()))
+                sendMessage = updateHandler.requestCertificate(update);
+            //if previous request was certificate, then request company description
+            else if (Objects.equals(lastChatCommand, Outcome.CERTIFICATE_REQUESTED.name()))
+                sendMessage = updateHandler.requestCompanyInfo(update);
             // start command called
             else if (Objects.equals(newCommand, Command.START.getText()))
                 sendMessage = updateHandler.start(update);

@@ -87,4 +87,9 @@ public class ProviderManagerImpl implements ProviderManager {
         Optional<Provider> providerOptional = providerRepository.findByUserTelegramId(user.getTelegramId());
         return providerOptional.orElseGet(() -> providerRepository.save(new Provider(user)));
     }
+
+    @Override
+    public Provider save(Provider provider) {
+        return providerRepository.save(provider);
+    }
 }

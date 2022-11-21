@@ -30,4 +30,6 @@ public interface ProviderManager {
     List<Provider> findAllByService(Service service);
 
     Provider getOrSave(UserDTO user);
+
+    Provider save(Provider provider);
 }

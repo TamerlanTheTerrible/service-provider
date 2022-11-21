@@ -27,4 +27,20 @@ public interface ProviderUpdateHandler {
     SendMessage acceptQuery(Update update);
 
     SendMessage denyQuery(Update update);
+
+    SendMessage requestPhone(Update update);
+
+    SendMessage requestCompanyName(Update update);
+
+    SendMessage requestCompanyAddress(Update update);
+
+    SendMessage requestWebsite(Update update);
+
+    SendMessage requestInstagram(Update update);
+
+    SendMessage requestTelegram(Update update);
+
+    SendMessage requestCertificate(Update update);
+
+    SendMessage requestCompanyInfo(Update update);
 }

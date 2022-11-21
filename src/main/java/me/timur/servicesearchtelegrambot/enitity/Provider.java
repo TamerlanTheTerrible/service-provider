@@ -1,6 +1,8 @@
 package me.timur.servicesearchtelegrambot.enitity;
 
 import lombok.*;
+import me.timur.servicesearchtelegrambot.bot.provider.enums.DocumentMimeType;
+import org.checkerframework.checker.compilermsgs.qual.UnknownCompilerMessageKey;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -22,6 +24,37 @@ public class Provider extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "company_name")
+    private String companyName;
+
+    @Column(name = "company_address")
+    private String companyAddress;
+
+    @Column(name = "website")
+    private String website;
+
+    @Column(name = "instagram")
+    private String instagram;
+
+    @Column(name = "telegram")
+    private String telegram;
+
+    @Column(name = "certificate_tg_file_id")
+    private String certificateTgFileId;
+
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "certificate_mime_type")
+//    private DocumentMimeType certificateMyType;
+
+    @Column(name = "company_information")
+    private String companyInformation;
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;

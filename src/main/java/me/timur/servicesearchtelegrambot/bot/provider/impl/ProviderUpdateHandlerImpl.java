@@ -5,7 +5,10 @@ import me.timur.servicesearchtelegrambot.bot.provider.ProviderUpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
-import me.timur.servicesearchtelegrambot.enitity.*;
+import me.timur.servicesearchtelegrambot.enitity.Provider;
+import me.timur.servicesearchtelegrambot.enitity.ProviderService;
+import me.timur.servicesearchtelegrambot.enitity.Query;
+import me.timur.servicesearchtelegrambot.enitity.Service;
 import me.timur.servicesearchtelegrambot.repository.ProviderServiceRepository;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
@@ -14,16 +17,16 @@ import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
-import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.chatId;
 
 /**
  * Created by Temurbek Ismoilov on 25/09/22.
@@ -42,13 +45,35 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Value("${keyboard.size.row}")
     private Integer keyboardRowSize;
 
+//    @Override
+//    public SendMessage start(Update update) {
+//        //save if user doesn't exist
+//        Provider provider = providerManager.getOrSave(user(update));
+//        final String name = provider.getName();
+//        final SendMessage sendMessage = logAndMessage(update, String.format("Добро пожаловать, %s. Напишите названия сервиса, который вы хотите предложить", name), Outcome.START);
+//        sendMessage.setReplyMarkup(removeKeyboard());
+//        return sendMessage;
+//    }
+
     @Override
     public SendMessage start(Update update) {
         //save if user doesn't exist
         Provider provider = providerManager.getOrSave(user(update));
-        final String name = provider.getName();
-        final SendMessage sendMessage = logAndMessage(update, String.format("Добро пожаловать, %s. Напишите названия сервиса, который вы хотите предложить", name), Outcome.START);
-        sendMessage.setReplyMarkup(removeKeyboard());
+
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.SKIP.getText());
+        final SendMessage sendMessage = logAndKeyboard(
+                update,
+                "Добро пожаловать. Здесь вы можете опубликовать услуги, которые вы хотите предложить\n\n" +
+                        "Для начало просим ответить на несколько вопросов о вашей фирме/деятельности. " +
+                        "Ответы на вопросы необязательные и можете пропустить, если не хотите отвечать. " +
+                        "Но мы рекомендуем дать на больше информации так, как это увеличит доверии к вам\n\n" +
+                        "Напишите Ваше имя и фамилию",
+                keyboard,
+                1,
+                Outcome.NAME_REQUESTED
+        );
+//        sendMessage.setReplyMarkup(removeKeyboard());
         return sendMessage;
     }
 
@@ -130,6 +155,155 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 //        return logAndMessage();
         return null;
     }
+
+    @Override
+    public SendMessage requestPhone(Update update) {
+        final String newCommand = command(update);
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setName(newCommand);
+            providerManager.save(provider);
+        }
+
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.SKIP.getText());
+        return logAndKeyboard(
+                update,
+                "Напишите номер телефона в формате +9989********",
+                keyboard,
+                1,
+                Outcome.PHONE_REQUESTED);
+    }
+
+    @Override
+    public SendMessage requestCompanyName(Update update) {
+        final String newCommand = command(update);
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setPhone(newCommand);
+            providerManager.save(provider);
+        }
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.SKIP.getText());
+        return logAndKeyboard(
+                update,
+                Outcome.COMPANY_NAME_REQUESTED.getText(),
+                keyboard,
+                1,
+                Outcome.COMPANY_NAME_REQUESTED);
+    }
+
+    @Override
+    public SendMessage requestCompanyAddress(Update update) {
+        final String newCommand = command(update);
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setCompanyName(newCommand);
+            providerManager.save(provider);
+        }
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.SKIP.getText());
+        return logAndKeyboard(
+                update,
+                Outcome.COMPANY_ADDRESS_REQUESTED.getText(),
+                keyboard,
+                1,
+                Outcome.COMPANY_ADDRESS_REQUESTED);
+    }
+
+    @Override
+    public SendMessage requestWebsite(Update update) {
+        final String newCommand = command(update);
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setCompanyAddress(newCommand);
+            providerManager.save(provider);
+        }
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.SKIP.getText());
+        return logAndKeyboard(
+                update,
+                Outcome.WEBSITE_REQUESTED.getText(),
+                keyboard,
+                1,
+                Outcome.WEBSITE_REQUESTED);
+    }
+
+    @Override
+    public SendMessage requestInstagram(Update update) {
+        final String newCommand = command(update);
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setWebsite(newCommand);
+            providerManager.save(provider);
+        }
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.SKIP.getText());
+        return logAndKeyboard(
+                update,
+                Outcome.INSTAGRAM_REQUESTED.getText(),
+                keyboard,
+                1,
+                Outcome.INSTAGRAM_REQUESTED);
+    }
+
+    @Override
+    public SendMessage requestTelegram(Update update) {
+        final String newCommand = command(update);
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setInstagram(newCommand);
+            providerManager.save(provider);
+        }
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.SKIP.getText());
+        return logAndKeyboard(
+                update,
+                Outcome.TELEGRAM_REQUESTED.getText(),
+                keyboard,
+                1,
+                Outcome.TELEGRAM_REQUESTED);
+    }
+
+    @Override
+    public SendMessage requestCertificate(Update update) {
+        final String newCommand = command(update);
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setTelegram(newCommand);
+            providerManager.save(provider);
+        }
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.SKIP.getText());
+        return logAndKeyboard(
+                update,
+                Outcome.CERTIFICATE_REQUESTED.getText(),
+                keyboard,
+                1,
+                Outcome.CERTIFICATE_REQUESTED);
+    }
+
+    @Override
+    public SendMessage requestCompanyInfo(Update update) {
+        final Document document = update.getMessage().getDocument();
+        if (document != null) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setCertificateTgFileId(document.getFileId());
+//            provider.setCertificateMyType(DocumentMimeType.findByType(document.getMimeType()));
+            providerManager.save(provider);
+        }
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.SKIP.getText());
+;
+        return logAndKeyboard(
+                update,
+                Outcome.COMPANY_INFO_REQUESTED.getText(),
+                keyboard,
+                1,
+                Outcome.COMPANY_INFO_REQUESTED);
+    }
+
+    //TODO a method to save company info and carry on with saving service to be provided
 
     @Override
     public SendMessage getServicesByCategoryName(Update update) {
