@@ -45,16 +45,6 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Value("${keyboard.size.row}")
     private Integer keyboardRowSize;
 
-//    @Override
-//    public SendMessage start(Update update) {
-//        //save if user doesn't exist
-//        Provider provider = providerManager.getOrSave(user(update));
-//        final String name = provider.getName();
-//        final SendMessage sendMessage = logAndMessage(update, String.format("Добро пожаловать, %s. Напишите названия сервиса, который вы хотите предложить", name), Outcome.START);
-//        sendMessage.setReplyMarkup(removeKeyboard());
-//        return sendMessage;
-//    }
-
     @Override
     public SendMessage start(Update update) {
         //save if user doesn't exist
@@ -99,34 +89,38 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
     @Override
     public List<SendMessage> handleQuery(Update update) {
-        //get query id from chat text
-        String chatText = update.getChannelPost().getText();
-        Long queryId = Long.valueOf(chatText.substring(chatText.indexOf("#") + 1));
+        try {
+            //get query id from chat text
+            String chatText = update.getChannelPost().getText();
+            Long queryId = Long.valueOf(chatText.substring(chatText.indexOf("#") + 1));
 
-        //get providers who can handle the query
-        Query query = queryService.getById(queryId);
-        List<Provider> providers = providerManager.findAllByService(query.getService());
+            //get providers who can handle the query
+            Query query = queryService.getById(queryId);
+            List<Provider> providers = providerManager.findAllByService(query.getService());
 
-        //prepare notifications for those providers
-        List<SendMessage> messages = new ArrayList<>();
-        for (Provider provider: providers) {
-            String chatId = provider.getUser().getTelegramId().toString();
-            List<String> keyboardTexts = new ArrayList<>();
-            keyboardTexts.add(Command.ACCEPT_QUERY.getText() + queryId);
-            keyboardTexts.add(Command.DENY_QUERY.getText());
-            messages.add(keyboard(chatId, chatText, keyboardTexts, keyboardRowSize));
+            //prepare notifications for those providers
+            List<SendMessage> messages = new ArrayList<>();
+            for (Provider provider: providers) {
+                String chatId = provider.getUser().getTelegramId().toString();
+                List<String> keyboardTexts = new ArrayList<>();
+                keyboardTexts.add(Command.ACCEPT_QUERY.getText() + queryId);
+                keyboardTexts.add(Command.DENY_QUERY.getText());
+                messages.add(keyboard(chatId, chatText, keyboardTexts, keyboardRowSize));
+            }
+            //send provider id list to channel
+            SendMessage channelReply = message(
+                    update.getChannelPost().getChatId().toString(),
+                    "#" + queryId + " provider IDs: " + providers.stream()
+                            .map(p -> String.valueOf(p.getId()))
+                            .collect(Collectors.joining(", "))
+            );
+
+            messages.add(channelReply);
+
+            return messages;
+        } catch (Exception e) {
+            return new ArrayList<SendMessage>();
         }
-        //send provider id list to channel
-        SendMessage channelReply = message(
-                update.getChannelPost().getChatId().toString(),
-                "#" + queryId + " provider IDs: " + providers.stream()
-                        .map(p -> String.valueOf(p.getId()))
-                        .collect(Collectors.joining(", "))
-        );
-
-        messages.add(channelReply);
-
-        return messages;
     }
 
     @Override
