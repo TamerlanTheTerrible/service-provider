@@ -32,8 +32,8 @@ public enum Outcome {
     COMPANY_INFO_REQUESTED("Напишите немного о компании/деятельности (максимум 255 символов)"),
     SKIP("➡️Пропустить"),
 
-    UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз")
-    ;
+    UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз"),
+    REQUEST_SERVICE_NAME("Напишите названия сервиса, который вы хотите предложить");
 
     private final String text;
 

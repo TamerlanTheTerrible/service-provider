@@ -16,6 +16,8 @@ public interface ProviderUpdateHandler {
 
     SendMessage getCategories(Update update);
 
+    SendMessage requestServiceName(Update update);
+
     SendMessage getServicesByCategoryName(Update update);
 
     SendMessage saveServiceIfServiceFoundOrSearchFurther(Update update);

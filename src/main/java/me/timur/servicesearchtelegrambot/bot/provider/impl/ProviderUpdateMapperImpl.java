@@ -51,8 +51,11 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
         try {
             final String newCommand = command(update);
             final String lastChatCommand = chatLogService.getLastChatOutcome(update);
+            // start command called
+            if (Objects.equals(newCommand, Command.START.getText()))
+                sendMessage = updateHandler.start(update);
             //check if it is from the group
-            if (update.getChannelPost() != null && Objects.equals(update.getChannelPost().getChatId(), serviceSearChannelId))
+            else if (update.getChannelPost() != null && Objects.equals(update.getChannelPost().getChatId(), serviceSearChannelId))
                 replyList.addAll(updateHandler.handleQuery(update));
             //if previous request was name, then request phone
             else if (Objects.equals(lastChatCommand, Outcome.NAME_REQUESTED.name()))
@@ -78,9 +81,9 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             //if previous request was certificate, then request company description
             else if (Objects.equals(lastChatCommand, Outcome.CERTIFICATE_REQUESTED.name()))
                 sendMessage = updateHandler.requestCompanyInfo(update);
-            // start command called
-            else if (Objects.equals(newCommand, Command.START.getText()))
-                sendMessage = updateHandler.start(update);
+            //if previous request was company description, then request service name
+            else if (Objects.equals(lastChatCommand, Outcome.COMPANY_INFO_REQUESTED.name()))
+                sendMessage = updateHandler.requestServiceName(update);
             // accept query
             else if (newCommand.contains(Command.ACCEPT_QUERY.getText()))
                 sendMessage = updateHandler.acceptQuery(update);
@@ -100,7 +103,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
                 sendMessage = updateHandler.saveServiceIfServiceFoundOrSearchFurther(update);
             }
             // searching a service
-            else if (lastChatCommand.equals(Outcome.START.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
+            else if (lastChatCommand.equals(Outcome.REQUEST_SERVICE_NAME.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
                 sendMessage = updateHandler.searchService(update);
 
         } catch (Exception e) {

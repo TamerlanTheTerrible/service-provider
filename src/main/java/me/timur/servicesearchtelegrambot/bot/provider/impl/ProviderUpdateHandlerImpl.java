@@ -303,6 +303,24 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
                 Outcome.COMPANY_INFO_REQUESTED);
     }
 
+    @Override
+    public SendMessage requestServiceName(Update update) {
+        final String newCommand = command(update);
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setCompanyInformation(newCommand);
+            providerManager.save(provider);
+        }
+
+        SendMessage sendMessage = logAndMessage(
+                update,
+                Outcome.REQUEST_SERVICE_NAME.getText(),
+                Outcome.REQUEST_SERVICE_NAME
+        );
+        sendMessage.setReplyMarkup(removeKeyboard());
+        return sendMessage;
+    }
+
     //TODO a method to save company info and carry on with saving service to be provided
 
     @Override

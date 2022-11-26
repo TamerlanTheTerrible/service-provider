@@ -37,8 +37,8 @@ public class ProviderBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         try {
-            execute(new GetFile("BQACAgIAAxkBAAO3Y3pMXymjuZ0Xa-0E0PE-53bc1D8AAnEeAALhUthLww8rKqczdeArBA"));
-//            handle(update);
+//            execute(new GetFile("BQACAgIAAxkBAAO3Y3pMXymjuZ0Xa-0E0PE-53bc1D8AAnEeAALhUthLww8rKqczdeArBA"));
+            handle(update);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
