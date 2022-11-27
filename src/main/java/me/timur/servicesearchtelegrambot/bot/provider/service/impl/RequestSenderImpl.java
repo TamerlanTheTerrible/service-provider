@@ -91,7 +91,7 @@ public class RequestSenderImpl implements RestRequester {
         final UriComponents uriComponents = uriBuilder()
                 .path("/file")
                 .path(CURRENT_BOT_TOKEN_URL)
-                .path(filePath)
+                .path("/" + filePath)
                 .build();
 
         return get(uriComponents);
@@ -117,7 +117,9 @@ public class RequestSenderImpl implements RestRequester {
     private String get(UriComponents uriComponents) {
         log.info("REQUEST: {}", uriComponents);
         final ResponseEntity<String> response = new RestTemplate().getForEntity(uriComponents.toUriString(), String.class);
-        log.info("RESPONSE: {}", response);
+        if (!uriComponents.getPath().contains("/file")) {
+            log.info("RESPONSE: {}", response);
+        }
         return response.getBody();
     }
 
