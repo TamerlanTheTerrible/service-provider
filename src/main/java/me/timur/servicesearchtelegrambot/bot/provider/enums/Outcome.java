@@ -9,10 +9,15 @@ import lombok.Getter;
 @Getter
 public enum Outcome {
     START("/start"),
+    REQUEST_SERVICE_NAME("Напишите названия сервиса, который вы хотите предложить"),
     SERVICE_SEARCH_FOUND("Возможно вы имели ввиду... \nЕсли не нашли, то что искали напишите названия сервиса еще раз или выберите услугу из общего списка"),
     SERVICE_SEARCH_NOT_FOUND("Не удалось найти сервис. Попробуйте еще раз или выберите из списка"),
     CATEGORIES("Выбрать из общего списка"),
     SERVICES("Выбрать из общего списка"),
+
+    MY_SERVICES("/services"),
+    COMPANY_INFO("/info"),
+
     QUERY_ACCEPTED("Запрос принят"),
     QUERY_DENIED("Запрос отказан"),
 //    BACK_TO_CATEGORIES("Все категории"),
@@ -33,8 +38,8 @@ public enum Outcome {
     SKIP("➡️Пропустить"),
 
     UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз"),
-    REQUEST_SERVICE_NAME("Напишите названия сервиса, который вы хотите предложить");
 
+    ;
     private final String text;
 
     Outcome(String s) {

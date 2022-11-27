@@ -1,9 +1,9 @@
-package me.timur.servicesearchtelegrambot.bot.provider.impl;
+package me.timur.servicesearchtelegrambot.bot.provider.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.timur.servicesearchtelegrambot.bot.provider.ProviderUpdateHandler;
-import me.timur.servicesearchtelegrambot.bot.provider.ProviderUpdateMapper;
+import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateHandler;
+import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateMapper;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
@@ -105,6 +105,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             // searching a service
             else if (lastChatCommand.equals(Outcome.REQUEST_SERVICE_NAME.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
                 sendMessage = updateHandler.searchService(update);
+
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);

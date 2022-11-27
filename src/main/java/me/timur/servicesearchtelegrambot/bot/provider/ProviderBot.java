@@ -1,10 +1,10 @@
 package me.timur.servicesearchtelegrambot.bot.provider;
 
 import lombok.RequiredArgsConstructor;
+import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateMapper;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;

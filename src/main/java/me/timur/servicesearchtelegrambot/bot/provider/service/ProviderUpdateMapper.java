@@ -1,4 +1,4 @@
-package me.timur.servicesearchtelegrambot.bot.provider;
+package me.timur.servicesearchtelegrambot.bot.provider.service;
 
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;

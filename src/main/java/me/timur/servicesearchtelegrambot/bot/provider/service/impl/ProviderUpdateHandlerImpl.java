@@ -1,14 +1,11 @@
-package me.timur.servicesearchtelegrambot.bot.provider.impl;
+package me.timur.servicesearchtelegrambot.bot.provider.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import me.timur.servicesearchtelegrambot.bot.provider.ProviderUpdateHandler;
+import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
-import me.timur.servicesearchtelegrambot.enitity.Provider;
-import me.timur.servicesearchtelegrambot.enitity.ProviderService;
-import me.timur.servicesearchtelegrambot.enitity.Query;
-import me.timur.servicesearchtelegrambot.enitity.Service;
+import me.timur.servicesearchtelegrambot.enitity.*;
 import me.timur.servicesearchtelegrambot.repository.ProviderServiceRepository;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
@@ -63,7 +60,6 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
                 1,
                 Outcome.NAME_REQUESTED
         );
-//        sendMessage.setReplyMarkup(removeKeyboard());
         return sendMessage;
     }
 
@@ -128,18 +124,28 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         //prepare reply
         SendMessage message = message(chatId(update), "");
         message.setReplyMarkup(KeyboardUtil.removeKeyBoard());
-
         //get query
         String command = command(update);
         Long queryId = Long.valueOf(command.substring(command.indexOf("#") + 1));
         Query query = queryService.getById(queryId);
+        //check if query is still active
+        if (!query.getIsActive()) {
+            message.setText("Клиент закрыл запрос");
+            return message;
+        }
+        //get client
+
+        final User client = query.getClient();
+        if (client.getUsername() != null) {
+
+        }
 
         //finalize reply
-        if (query.getIsActive()) {
-            message.setText("Номер заказчика: " + query.getClient().getPhone());
-        }
-        else
-            message.setText("Клиент закрыл запрос");
+//        if (query.getIsActive()) {
+//            message.setText("Номер заказчика: " + client.getPhone());
+//        }
+//        else
+//            message.setText("Клиент закрыл запрос");
 
         return message;
     }
