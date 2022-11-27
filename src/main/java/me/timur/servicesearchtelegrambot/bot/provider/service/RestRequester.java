@@ -1,15 +1,18 @@
 package me.timur.servicesearchtelegrambot.bot.provider.service;
 
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.core.io.Resource;
 
 /**
  * Created by Temurbek Ismoilov on 27/11/22.
  */
 
 public interface RestRequester {
-//    @Async
-//    void sendMessage(String chatId, String message);
 
-    @Async
-    void sendDocument(String chatId, String message);
+    void sendMessage(String chatId, String text);
+
+    String getFilePath(String chatId, String fileId);
+
+    String downloadFile(String filePath);
+
+    void sendDocument(String chatId, Resource resource);
 }

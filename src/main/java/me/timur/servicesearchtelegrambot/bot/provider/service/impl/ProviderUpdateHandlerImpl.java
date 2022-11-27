@@ -2,12 +2,14 @@ package me.timur.servicesearchtelegrambot.bot.provider.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.timur.servicesearchtelegrambot.bot.provider.service.NotificationService;
 import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
 import me.timur.servicesearchtelegrambot.bot.provider.service.RestRequester;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
 import me.timur.servicesearchtelegrambot.enitity.*;
+import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
 import me.timur.servicesearchtelegrambot.repository.ProviderServiceRepository;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
@@ -41,7 +43,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     private final ServiceManager serviceManager;
     private final ProviderServiceRepository providerServiceRepository;
     private final QueryService queryService;
-    private final RestRequester restRequester;
+    private final NotificationService notificationService;
 
     @Value("${keyboard.size.row}")
     private Integer keyboardRowSize;
@@ -155,14 +157,10 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         final Provider provider = providerManager.getByUserTelegramId(Long.valueOf(chatId(update)));
 
         //message to client
-        if (client.getUsername() != null) {
-//            restRequester.sendMessage(
-//                    client.getTelegramId().toString(),
-//                    String.format("%s готов обработать ваш заказ", provider.getName())
-//            );
-            restRequester.sendDocument(
+        if (client.getTelegramId() != null) {
+            notificationService.sendNotification(
                     client.getTelegramId().toString(),
-                    provider.getCertificateTgFileId()
+                    new ServiceProviderDTO(provider)
             );
         }
 
