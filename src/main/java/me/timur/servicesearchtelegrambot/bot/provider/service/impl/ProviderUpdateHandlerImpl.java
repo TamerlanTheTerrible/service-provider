@@ -1,9 +1,11 @@
 package me.timur.servicesearchtelegrambot.bot.provider.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.provider.service.RestRequester;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
 import me.timur.servicesearchtelegrambot.enitity.*;
 import me.timur.servicesearchtelegrambot.repository.ProviderServiceRepository;
@@ -29,6 +31,7 @@ import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
  * Created by Temurbek Ismoilov on 25/09/22.
  */
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
@@ -38,6 +41,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     private final ServiceManager serviceManager;
     private final ProviderServiceRepository providerServiceRepository;
     private final QueryService queryService;
+    private final RestRequester restRequester;
 
     @Value("${keyboard.size.row}")
     private Integer keyboardRowSize;
@@ -85,10 +89,16 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
     @Override
     public List<SendMessage> handleQuery(Update update) {
+        String chatText = "";
         try {
             //get query id from chat text
-            String chatText = update.getChannelPost().getText();
-            Long queryId = Long.valueOf(chatText.substring(chatText.indexOf("#") + 1));
+            chatText = update.getChannelPost().getText();
+            Long queryId = Long.valueOf(
+                    chatText.substring(
+                            chatText.indexOf("#") + 1,
+                            chatText.indexOf(" ")
+                    )
+            );
 
             //get providers who can handle the query
             Query query = queryService.getById(queryId);
@@ -101,7 +111,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
                 List<String> keyboardTexts = new ArrayList<>();
                 keyboardTexts.add(Command.ACCEPT_QUERY.getText() + queryId);
                 keyboardTexts.add(Command.DENY_QUERY.getText());
-                messages.add(keyboard(chatId, chatText, keyboardTexts, keyboardRowSize));
+                messages.add(keyboard(chatId, "Новый запрос #" + queryId, keyboardTexts, keyboardRowSize));
             }
             //send provider id list to channel
             SendMessage channelReply = message(
@@ -115,6 +125,8 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
             return messages;
         } catch (Exception e) {
+            log.error("Error while handling channel post: {}", chatText);
+            log.error(e.getMessage(), e);
             return new ArrayList<SendMessage>();
         }
     }
@@ -122,31 +134,43 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage acceptQuery(Update update) {
         //prepare reply
-        SendMessage message = message(chatId(update), "");
+        SendMessage message = message(chatId(update), "Можете связаться с заказчиком: ");
         message.setReplyMarkup(KeyboardUtil.removeKeyBoard());
+
         //get query
         String command = command(update);
-        Long queryId = Long.valueOf(command.substring(command.indexOf("#") + 1));
+        Long queryId = Long.valueOf(
+                command.substring(command.indexOf("#") + 1)
+        );
         Query query = queryService.getById(queryId);
+
         //check if query is still active
         if (!query.getIsActive()) {
             message.setText("Клиент закрыл запрос");
             return message;
         }
-        //get client
 
+        //fetch client and provider
         final User client = query.getClient();
-        if (client.getUsername() != null) {
+        final Provider provider = providerManager.getByUserTelegramId(Long.valueOf(chatId(update)));
 
+        //message to client
+        if (client.getUsername() != null) {
+//            restRequester.sendMessage(
+//                    client.getTelegramId().toString(),
+//                    String.format("%s готов обработать ваш заказ", provider.getName())
+//            );
+            restRequester.sendDocument(
+                    client.getTelegramId().toString(),
+                    provider.getCertificateTgFileId()
+            );
         }
 
-        //finalize reply
-//        if (query.getIsActive()) {
-//            message.setText("Номер заказчика: " + client.getPhone());
-//        }
-//        else
-//            message.setText("Клиент закрыл запрос");
-
+        //message to provider
+        if (client.getUsername() != null)
+            message.setText(message.getText() + "@" + client.getUsername());
+        else
+            message.setText(message.getText() + client.getPhone());
         return message;
     }
 

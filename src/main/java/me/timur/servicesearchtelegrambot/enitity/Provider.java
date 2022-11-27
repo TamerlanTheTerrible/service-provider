@@ -67,13 +67,13 @@ public class Provider extends BaseEntity{
         this.isActive = true;
     }
 
-    public String getName() {
-        if (this.user == null) return "";
-        return Objects.nonNull(this.user.getFirstname()) ? this.user.getFirstname()
-                : Objects.nonNull(this.user.getLastname()) ? this.user.getLastname()
-                : Objects.nonNull(this.user.getUsername()) ? this.user.getUsername()
-                : "друг";
-    }
+//    public String getUserName() {
+//        if (this.user == null) return "";
+//        return Objects.nonNull(this.user.getFirstname()) ? this.user.getFirstname()
+//                : Objects.nonNull(this.user.getLastname()) ? this.user.getLastname()
+//                : Objects.nonNull(this.user.getUsername()) ? this.user.getUsername()
+//                : "друг";
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -86,5 +86,23 @@ public class Provider extends BaseEntity{
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Provider{" +
+                "user=" + user +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", companyAddress='" + companyAddress + '\'' +
+                ", website='" + website + '\'' +
+                ", instagram='" + instagram + '\'' +
+                ", telegram='" + telegram + '\'' +
+                ", certificateTgFileId='" + certificateTgFileId + '\'' +
+                ", companyInformation='" + companyInformation + '\'' +
+                ", isActive=" + isActive +
+                ", services=" + services +
+                '}';
     }
 }
