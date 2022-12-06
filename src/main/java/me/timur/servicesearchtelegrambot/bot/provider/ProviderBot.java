@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -38,7 +39,6 @@ public class ProviderBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         try {
-//            execute(new GetFile("BQACAgIAAxkBAAO3Y3pMXymjuZ0Xa-0E0PE-53bc1D8AAnEeAALhUthLww8rKqczdeArBA"));
             handle(update);
         } catch (TelegramApiException e) {
             e.printStackTrace();
@@ -46,7 +46,7 @@ public class ProviderBot extends TelegramLongPollingBot {
     }
 
     private void handle(Update update) throws TelegramApiException {
-        final List<BotApiMethod<Message>> sendMessageList = providerUpdateMapper.map(update);
+        final List<SendMessage> sendMessageList = providerUpdateMapper.map(update);
         for (BotApiMethod<Message> message: sendMessageList) {
             execute(message);
         }

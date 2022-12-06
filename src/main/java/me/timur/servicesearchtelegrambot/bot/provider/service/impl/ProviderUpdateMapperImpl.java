@@ -2,17 +2,15 @@ package me.timur.servicesearchtelegrambot.bot.provider.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateHandler;
-import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateMapper;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateHandler;
+import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateMapper;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
@@ -38,13 +36,13 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
     private Long serviceSearChannelId;
 
     @Override
-    public List<BotApiMethod<Message>> map(Update update) {
+    public List<SendMessage> map(Update update) {
         return tryToMap(update);
     }
 
-    private List<BotApiMethod<Message>> tryToMap(Update update) {
+    private List<SendMessage> tryToMap(Update update) {
         final List<String> serviceNames = serviceManager.getActiveServiceNames();
-        final List<BotApiMethod<Message>> replyList = new ArrayList<>();
+        final List<SendMessage> replyList = new ArrayList<>();
 
         SendMessage sendMessage = null;
 
@@ -86,7 +84,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
                 sendMessage = updateHandler.requestServiceName(update);
             // accept query
             else if (newCommand.contains(Command.ACCEPT_QUERY.getText()))
-                sendMessage = updateHandler.acceptQuery(update);
+                replyList.addAll(updateHandler.acceptQuery(update));
             // deny query
             else if (newCommand.equals(Command.DENY_QUERY.getText()))
                 sendMessage = updateHandler.denyQuery(update);

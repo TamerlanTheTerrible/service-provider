@@ -26,7 +26,7 @@ public interface ProviderUpdateHandler {
 
     List<SendMessage> handleQuery(Update update);
 
-    SendMessage acceptQuery(Update update);
+    List<SendMessage> acceptQuery(Update update);
 
     SendMessage denyQuery(Update update);
 

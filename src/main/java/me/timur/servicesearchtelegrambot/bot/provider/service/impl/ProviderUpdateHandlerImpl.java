@@ -2,12 +2,10 @@ package me.timur.servicesearchtelegrambot.bot.provider.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.timur.servicesearchtelegrambot.bot.provider.enums.DocumentMimeType;
-import me.timur.servicesearchtelegrambot.bot.provider.service.NotificationService;
-import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
-import me.timur.servicesearchtelegrambot.bot.provider.service.RestRequester;
+import me.timur.servicesearchtelegrambot.bot.provider.service.NotificationService;
+import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
 import me.timur.servicesearchtelegrambot.enitity.*;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
@@ -50,6 +48,9 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
     @Value("${keyboard.size.row}")
     private Integer keyboardRowSize;
+
+    @Value("${channel.service.searcher.id.dev}")
+    private String serviceSearchChannelId;
 
     @Override
     public SendMessage start(Update update) {
@@ -99,10 +100,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
             //get query id from chat text
             chatText = update.getChannelPost().getText();
             Long queryId = Long.valueOf(
-                    chatText.substring(
-                            chatText.indexOf("#") + 1,
-                            chatText.indexOf(" ")
-                    )
+                    chatText.substring(chatText.indexOf("#") + 1)
             );
 
             //get providers who can handle the query
@@ -137,10 +135,14 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     }
 
     @Override
-    public SendMessage acceptQuery(Update update) {
+    public List<SendMessage> acceptQuery(Update update) {
+        //client clientMsg
+        SendMessage clientMsg = message(chatId(update), "Можете связаться с заказчиком: ");
+        clientMsg.setReplyMarkup(KeyboardUtil.removeKeyBoard());
         //prepare reply
-        SendMessage message = message(chatId(update), "Можете связаться с заказчиком: ");
-        message.setReplyMarkup(KeyboardUtil.removeKeyBoard());
+        List<SendMessage> messages = new ArrayList<>();
+        messages.add(clientMsg);
+
 
         //get query
         String command = command(update);
@@ -151,15 +153,15 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
         //check if query is still active
         if (!query.getIsActive()) {
-            message.setText("Клиент закрыл запрос");
-            return message;
+            clientMsg.setText("Клиент закрыл запрос");
+            return messages;
         }
 
         //fetch client and provider
         final User client = query.getClient();
         final Provider provider = providerManager.getByUserTelegramId(Long.valueOf(chatId(update)));
 
-        //message to client
+        //clientMsg to client
         if (client.getTelegramId() != null) {
             notificationService.sendNotification(
                     client.getTelegramId().toString(),
@@ -167,12 +169,17 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
             );
         }
 
-        //message to provider
+        //clientMsg to provider
         if (client.getUsername() != null)
-            message.setText(message.getText() + "@" + client.getUsername());
+            clientMsg.setText(clientMsg.getText() + "@" + client.getUsername());
         else
-            message.setText(message.getText() + client.getPhone());
-        return message;
+            clientMsg.setText(clientMsg.getText() + client.getPhone());
+
+        //clientMsg to the channel
+        SendMessage channelMsg = message(serviceSearchChannelId, provider.getName() + " готов обработать заказ #" + queryId);
+        messages.add(channelMsg);
+
+        return messages;
     }
 
     @Override
