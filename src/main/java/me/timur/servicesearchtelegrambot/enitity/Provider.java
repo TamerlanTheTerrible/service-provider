@@ -50,8 +50,8 @@ public class Provider extends BaseEntity{
     private String certificateTgFileId;
 
 //    @Enumerated(EnumType.STRING)
-//    @Column(name = "certificate_mime_type")
-//    private DocumentMimeType certificateMyType;
+    @Column(name = "certificate_mime_type")
+    private String certificateMyType;
 
     @Column(name = "company_information")
     private String companyInformation;

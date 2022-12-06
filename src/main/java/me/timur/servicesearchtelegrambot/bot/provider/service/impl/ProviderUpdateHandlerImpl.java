@@ -2,6 +2,7 @@ package me.timur.servicesearchtelegrambot.bot.provider.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.timur.servicesearchtelegrambot.bot.provider.enums.DocumentMimeType;
 import me.timur.servicesearchtelegrambot.bot.provider.service.NotificationService;
 import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
@@ -15,10 +16,12 @@ import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
 import me.timur.servicesearchtelegrambot.service.QueryService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Document;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
@@ -307,11 +310,17 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
     @Override
     public SendMessage requestCompanyInfo(Update update) {
-        final Document document = update.getMessage().getDocument();
-        if (document != null) {
-            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+        Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+        if ( update.getMessage().getDocument() != null) {
+            final Document document = update.getMessage().getDocument();
             provider.setCertificateTgFileId(document.getFileId());
-//            provider.setCertificateMyType(DocumentMimeType.findByType(document.getMimeType()));
+            provider.setCertificateMyType(FilenameUtils.getExtension(document.getFileName()));
+            providerManager.save(provider);
+        } else if (update.getMessage().getPhoto() != null) {
+            final List<PhotoSize> photoList = update.getMessage().getPhoto();
+            PhotoSize photo = photoList.get(photoList.size()-1);
+            provider.setCertificateTgFileId(photo.getFileId());
+            provider.setCertificateMyType("jpeg");
             providerManager.save(provider);
         }
         List<String> keyboard = new ArrayList<>();

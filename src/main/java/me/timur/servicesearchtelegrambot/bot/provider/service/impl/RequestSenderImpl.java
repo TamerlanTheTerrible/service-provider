@@ -98,6 +98,20 @@ public class RequestSenderImpl implements RestRequester {
     }
 
     @Override
+    public byte[] downloadFile2(String filePath) {
+//        return new URL("https://api.telegram.org/file/bot"+CURRENT_BOT_TOKEN_URL+"/"+filePath).openStream();
+        final UriComponents uriComponents = uriBuilder()
+                .path("/file")
+                .path(CURRENT_BOT_TOKEN_URL)
+                .path("/" + filePath)
+                .build();
+
+        return new RestTemplate()
+                .getForEntity(uriComponents.toUriString(), byte[].class)
+                .getBody();
+    }
+
+    @Override
     public void sendDocument(String chatId, Resource resource) {
         final UriComponents uriComponents = uriBuilder()
                 .path(SEARCH_BOT_TOKEN_URL)
@@ -109,6 +123,23 @@ public class RequestSenderImpl implements RestRequester {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("document", resource);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        post(uriComponents, requestEntity);
+    }
+
+    @Override
+    public void sendPhoto(String chatId, Resource resource) {
+        final UriComponents uriComponents = uriBuilder()
+                .path(SEARCH_BOT_TOKEN_URL)
+                .path("/sendPhoto")
+                .queryParam("chat_id", chatId)
+                .build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("photo", resource);
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         post(uriComponents, requestEntity);
