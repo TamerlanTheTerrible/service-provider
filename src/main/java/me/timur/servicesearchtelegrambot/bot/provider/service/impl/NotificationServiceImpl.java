@@ -10,6 +10,7 @@ import me.timur.servicesearchtelegrambot.bot.provider.service.RestRequester;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 
@@ -75,7 +76,7 @@ public class NotificationServiceImpl implements NotificationService {
             //download file and save file
             Path path = downloadFile(filePath, clientTgId);
             //send file
-            sendFile(path, filePath, certificateTgFileId);
+            sendFile(path, filePath, clientTgId);
             // delete file after transaction
             Files.deleteIfExists(path);
         } catch (Exception e) {
@@ -98,14 +99,15 @@ public class NotificationServiceImpl implements NotificationService {
         final String separator = File.separator;
 
         Path path = Paths.get("." + separator + "certificate" + clientTgId + "." + fileExtension);
-        Files.deleteIfExists(path);
-        Files.createFile(path);
+        if (!Files.exists(path)) {
+            Files.createFile(path);
+        }
         Files.write(path, bytes);
 
         return path;
     }
 
-    private void sendFile(Path path, String tgFilePath, String clientTgId) throws MalformedURLException {
+    private void sendFile(Path path, String tgFilePath, String clientTgId) throws IOException {
         List<String> photoFormats = new ArrayList<>();
         photoFormats.add("jpg");
         photoFormats.add("jpeg");
