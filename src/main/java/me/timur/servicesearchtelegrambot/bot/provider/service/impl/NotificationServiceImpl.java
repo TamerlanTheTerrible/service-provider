@@ -50,25 +50,18 @@ public class NotificationServiceImpl implements NotificationService {
 
         if (provider.getUser().getUsername() != null)
             stringBuilder.append("\nПользователь: @" + provider.getUser().getUsername());
-
         if (provider.getPhone() != null)
             stringBuilder.append("\nТелефон: " + provider.getPhone());
-
         if (provider.getCompanyName() != null)
             stringBuilder.append("\nФирма: " + provider.getCompanyName());
-
         if (provider.getCompanyAddress() != null)
             stringBuilder.append("\nАдрес: " + provider.getCompanyAddress());
-
         if (provider.getWebSite() != null)
             stringBuilder.append("\nСайт: " + provider.getWebSite());
-
         if (provider.getInstagram() != null)
             stringBuilder.append("\nИнстаграм: " + provider.getInstagram());
-
         if (provider.getTelegram() != null)
             stringBuilder.append("\nТелеграм: " + provider.getTelegram());
-
         if (provider.getDateCreated() != null)
             stringBuilder.append("\nО фирме: " + provider.getDateCreated());
 
