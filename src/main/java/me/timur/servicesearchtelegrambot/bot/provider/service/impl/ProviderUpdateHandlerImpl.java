@@ -18,6 +18,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -196,23 +197,17 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
             provider.setName(newCommand);
             providerManager.save(provider);
         }
-
-        List<String> keyboard = new ArrayList<>();
-        keyboard.add(Outcome.SKIP.getText());
-        return logAndKeyboard(
-                update,
-                "Напишите номер телефона в формате +9989********",
-                keyboard,
-                1,
-                Outcome.PHONE_REQUESTED);
+        final SendMessage msg = logAndMessage(update, "Поделитесь номером телефона", Outcome.PHONE_REQUESTED);
+        msg.setReplyMarkup(KeyboardUtil.phoneRequest());
+        return msg;
     }
 
     @Override
     public SendMessage requestCompanyName(Update update) {
-        final String newCommand = command(update);
-        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+        final Contact contact = update.getMessage().getContact();
+        if (contact != null) {
             Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-            provider.setPhone(newCommand);
+            provider.setPhone(contact.getPhoneNumber());
             providerManager.save(provider);
         }
         List<String> keyboard = new ArrayList<>();

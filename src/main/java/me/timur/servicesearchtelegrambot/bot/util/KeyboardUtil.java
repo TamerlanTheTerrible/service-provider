@@ -2,6 +2,7 @@ package me.timur.servicesearchtelegrambot.bot.util;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
@@ -33,8 +34,30 @@ public class KeyboardUtil {
             row = new KeyboardRow(rowSize);
         }
         //create keyboard from keyboard row list
-        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
+        ReplyKeyboardMarkup keyboard = replyKeyboardMarkup();
         keyboard.setKeyboard(rows);
+        return keyboard;
+    }
+
+    public static ReplyKeyboardMarkup phoneRequest() {
+        KeyboardButton button = new KeyboardButton("Поделится телефоном");
+        button.setRequestContact(true);
+
+        KeyboardRow row = new KeyboardRow();
+        row.add(button);
+
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        keyboardRows.add(row);
+
+        ReplyKeyboardMarkup keyboard = replyKeyboardMarkup();
+
+        keyboard.setKeyboard(keyboardRows);
+
+        return keyboard;
+    }
+
+    private static ReplyKeyboardMarkup replyKeyboardMarkup() {
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
         keyboard.setResizeKeyboard(true);
         keyboard.setOneTimeKeyboard(true);
         keyboard.setSelective(false);
