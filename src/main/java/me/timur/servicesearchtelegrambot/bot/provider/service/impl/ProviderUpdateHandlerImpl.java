@@ -120,7 +120,8 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
             //send provider id list to channel
             SendMessage channelReply = message(
                     update.getChannelPost().getChatId().toString(),
-                    "#" + queryId + " provider IDs: " + providers.stream()
+                    "#" + queryId + " provider IDs: " + providers
+                            .stream()
                             .map(p -> String.valueOf(p.getId()))
                             .collect(Collectors.joining(", "))
             );
@@ -201,6 +202,43 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         msg.setReplyMarkup(KeyboardUtil.phoneRequest());
         return msg;
     }
+
+    @Override
+    public SendMessage requestCompanyInfo(Update update) {
+        final Contact contact = update.getMessage().getContact();
+        if (contact != null) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setPhone(contact.getPhoneNumber());
+            providerManager.save(provider);
+        }
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.SKIP.getText());
+        return logAndKeyboard(
+                update,
+                Outcome.COMPANY_INFO_REQUESTED.getText(),
+                keyboard,
+                1,
+                Outcome.COMPANY_INFO_REQUESTED);
+    }
+
+    @Override
+    public SendMessage requestServiceName(Update update) {
+        final String newCommand = command(update);
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setCompanyInformation(newCommand);
+            providerManager.save(provider);
+        }
+
+        SendMessage sendMessage = logAndMessage(
+                update,
+                Outcome.REQUEST_SERVICE_NAME.getText(),
+                Outcome.REQUEST_SERVICE_NAME
+        );
+        sendMessage.setReplyMarkup(removeKeyboard());
+        return sendMessage;
+    }
+
 
     @Override
     public SendMessage requestCompanyName(Update update) {
@@ -309,50 +347,32 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
                 1,
                 Outcome.CERTIFICATE_REQUESTED);
     }
-
-    @Override
-    public SendMessage requestCompanyInfo(Update update) {
-        Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-        if ( update.getMessage().getDocument() != null) {
-            final Document document = update.getMessage().getDocument();
-            provider.setCertificateTgFileId(document.getFileId());
-            provider.setCertificateMyType(FilenameUtils.getExtension(document.getFileName()));
-            providerManager.save(provider);
-        } else if (update.getMessage().getPhoto() != null) {
-            final List<PhotoSize> photoList = update.getMessage().getPhoto();
-            PhotoSize photo = photoList.get(photoList.size()-1);
-            provider.setCertificateTgFileId(photo.getFileId());
-            provider.setCertificateMyType("jpeg");
-            providerManager.save(provider);
-        }
-        List<String> keyboard = new ArrayList<>();
-        keyboard.add(Outcome.SKIP.getText());
-;
-        return logAndKeyboard(
-                update,
-                Outcome.COMPANY_INFO_REQUESTED.getText(),
-                keyboard,
-                1,
-                Outcome.COMPANY_INFO_REQUESTED);
-    }
-
-    @Override
-    public SendMessage requestServiceName(Update update) {
-        final String newCommand = command(update);
-        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-            provider.setCompanyInformation(newCommand);
-            providerManager.save(provider);
-        }
-
-        SendMessage sendMessage = logAndMessage(
-                update,
-                Outcome.REQUEST_SERVICE_NAME.getText(),
-                Outcome.REQUEST_SERVICE_NAME
-        );
-        sendMessage.setReplyMarkup(removeKeyboard());
-        return sendMessage;
-    }
+//
+//    @Override
+//    public SendMessage requestCompanyInfo(Update update) {
+//        Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+//        if ( update.getMessage().getDocument() != null) {
+//            final Document document = update.getMessage().getDocument();
+//            provider.setCertificateTgFileId(document.getFileId());
+//            provider.setCertificateMyType(FilenameUtils.getExtension(document.getFileName()));
+//            providerManager.save(provider);
+//        } else if (update.getMessage().getPhoto() != null) {
+//            final List<PhotoSize> photoList = update.getMessage().getPhoto();
+//            PhotoSize photo = photoList.get(photoList.size()-1);
+//            provider.setCertificateTgFileId(photo.getFileId());
+//            provider.setCertificateMyType("jpeg");
+//            providerManager.save(provider);
+//        }
+//        List<String> keyboard = new ArrayList<>();
+//        keyboard.add(Outcome.SKIP.getText());
+//;
+//        return logAndKeyboard(
+//                update,
+//                Outcome.COMPANY_INFO_REQUESTED.getText(),
+//                keyboard,
+//                1,
+//                Outcome.COMPANY_INFO_REQUESTED);
+//    }
 
     //TODO a method to save company info and carry on with saving service to be provided
 

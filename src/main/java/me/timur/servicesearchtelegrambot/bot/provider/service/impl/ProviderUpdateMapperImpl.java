@@ -60,26 +60,26 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
                 sendMessage = updateHandler.requestPhone(update);
             //if previous request was phone, then request company name
             else if (Objects.equals(lastChatCommand, Outcome.PHONE_REQUESTED.name()))
-                sendMessage = updateHandler.requestCompanyName(update);
-            //if previous request was company name, then request company address
-            else if (Objects.equals(lastChatCommand, Outcome.COMPANY_NAME_REQUESTED.name()))
-                sendMessage = updateHandler.requestCompanyAddress(update);
-            //if previous request was company address, then request company website
-            else if (Objects.equals(lastChatCommand, Outcome.COMPANY_ADDRESS_REQUESTED.name()))
-                sendMessage = updateHandler.requestWebsite(update);
-            //if previous request was website, then request instagram
-            else if (Objects.equals(lastChatCommand, Outcome.WEBSITE_REQUESTED.name()))
-                sendMessage = updateHandler.requestInstagram(update);
-            //if previous request was instagram, then request telegram
-            else if (Objects.equals(lastChatCommand, Outcome.INSTAGRAM_REQUESTED.name()))
-                sendMessage = updateHandler.requestTelegram(update);
-            //if previous request was telegram, then request certificate
-            else if (Objects.equals(lastChatCommand, Outcome.TELEGRAM_REQUESTED.name()))
-                sendMessage = updateHandler.requestCertificate(update);
-            //if previous request was certificate, then request company description
-            else if (Objects.equals(lastChatCommand, Outcome.CERTIFICATE_REQUESTED.name()))
                 sendMessage = updateHandler.requestCompanyInfo(update);
-            //if previous request was company description, then request service name
+//            //if previous request was company name, then request company address
+//            else if (Objects.equals(lastChatCommand, Outcome.COMPANY_NAME_REQUESTED.name()))
+//                sendMessage = updateHandler.requestCompanyAddress(update);
+//            //if previous request was company address, then request company website
+//            else if (Objects.equals(lastChatCommand, Outcome.COMPANY_ADDRESS_REQUESTED.name()))
+//                sendMessage = updateHandler.requestWebsite(update);
+//            //if previous request was website, then request instagram
+//            else if (Objects.equals(lastChatCommand, Outcome.WEBSITE_REQUESTED.name()))
+//                sendMessage = updateHandler.requestInstagram(update);
+//            //if previous request was instagram, then request telegram
+//            else if (Objects.equals(lastChatCommand, Outcome.INSTAGRAM_REQUESTED.name()))
+//                sendMessage = updateHandler.requestTelegram(update);
+//            //if previous request was telegram, then request certificate
+//            else if (Objects.equals(lastChatCommand, Outcome.TELEGRAM_REQUESTED.name()))
+//                sendMessage = updateHandler.requestCertificate(update);
+//            //if previous request was certificate, then request company description
+//            else if (Objects.equals(lastChatCommand, Outcome.CERTIFICATE_REQUESTED.name()))
+//                sendMessage = updateHandler.requestCompanyInfo(update);
+//            //if previous request was company description, then request service name
             else if (Objects.equals(lastChatCommand, Outcome.COMPANY_INFO_REQUESTED.name()))
                 sendMessage = updateHandler.requestServiceName(update);
             // accept query
