@@ -13,7 +13,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
 @Table(name = "provider_service_subscription")
@@ -29,9 +28,6 @@ public class ProviderServiceSubscription extends BaseEntity{
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,5 +39,14 @@ public class ProviderServiceSubscription extends BaseEntity{
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "ProviderServiceSubscription{" +
+                "providerService=" + providerService +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                '}';
     }
 }

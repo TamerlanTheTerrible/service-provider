@@ -49,4 +49,16 @@ public class User extends BaseEntity {
         }
         this.isActive = true;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "telegramId=" + telegramId +
+                ", username='" + username + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", phone='" + phone + '\'' +
+                ", isActive=" + isActive +
+                '}';
+    }
 }

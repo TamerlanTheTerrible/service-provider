@@ -9,11 +9,14 @@ import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
 import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 import me.timur.servicesearchtelegrambot.repository.ProviderRepository;
 import me.timur.servicesearchtelegrambot.repository.ProviderServiceRepository;
+import me.timur.servicesearchtelegrambot.repository.ProviderServiceSubscriptionRepository;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
 import me.timur.servicesearchtelegrambot.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +35,7 @@ public class ProviderManagerImpl implements ProviderManager {
     private final ServiceManager serviceManager;
     private final UserService userService;
     private final ProviderServiceRepository providerServiceRepository;
+    private final ProviderServiceSubscriptionRepository subscriptionRepository;
 
     @Override
     public Provider getById(Long id) {
@@ -74,11 +78,18 @@ public class ProviderManagerImpl implements ProviderManager {
     }
 
     @Override
-    public List<Provider> findAllByService(me.timur.servicesearchtelegrambot.enitity.Service service) {
-        List<Long> providerIdList = providerServiceRepository.findAllByService(service)
-                .stream().map(ps -> ps.getProvider().getId()).collect(Collectors.toList());
+    public List<Provider> findAllByServiceAndActiveSubscription(me.timur.servicesearchtelegrambot.enitity.Service service) {
+        return subscriptionRepository
+                .findByProviderServiceServiceAndEndDateAfterOrderByStartDateDesc(service, LocalDate.now())
+                .stream()
+                .filter(s -> s.getProviderService().getActive())
+                .map(s -> s.getProviderService().getProvider())
+                .collect(Collectors.toList());
 
-        return providerRepository.findAllByIdInAndIsActiveTrue(providerIdList);
+//        List<Long> providerIdList = providerServiceRepository.findAllByServiceAndActiveTrue(service)
+//                .stream().map(ps -> ps.getProvider().getId()).collect(Collectors.toList());
+//
+//        return providerRepository.findAllByIdInAndIsActiveTrue(providerIdList);
     }
 
     @Override

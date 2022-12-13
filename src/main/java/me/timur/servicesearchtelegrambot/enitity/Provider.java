@@ -15,7 +15,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
 @Table(name = "provider")
@@ -59,8 +58,8 @@ public class Provider extends BaseEntity{
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
-    @OneToMany(mappedBy = "provider", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    private List<ProviderService> services;
+//    @OneToMany(mappedBy = "provider", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+//    private List<ProviderService> services;
 
     public Provider(User user) {
         this.user = user;
@@ -102,7 +101,7 @@ public class Provider extends BaseEntity{
                 ", certificateTgFileId='" + certificateTgFileId + '\'' +
                 ", companyInformation='" + companyInformation + '\'' +
                 ", isActive=" + isActive +
-                ", services=" + services +
+//                ", services=" + services +
                 '}';
     }
 }

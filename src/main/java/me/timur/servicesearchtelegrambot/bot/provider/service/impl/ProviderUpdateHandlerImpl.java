@@ -106,7 +106,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
             //get providers who can handle the query
             Query query = queryService.getById(queryId);
-            List<Provider> providers = providerManager.findAllByService(query.getService());
+            List<Provider> providers = providerManager.findAllByServiceAndActiveSubscription(query.getService());
 
             //prepare notifications for those providers
             List<SendMessage> messages = new ArrayList<>();
@@ -382,7 +382,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         if (providerServiceOpt.isPresent()) {
             sendMessage = logAndMessage(update, Outcome.PROVIDER_SERVICE_ALREADY_EXISTS.getText(), Outcome.PROVIDER_SERVICE_ALREADY_EXISTS);
         } else {
-            providerServiceRepository.save(new ProviderService(provider, service));
+            providerServiceRepository.save(new ProviderService(provider, service, false));
             sendMessage = logAndMessage(update, Outcome.PROVIDER_SERVICE_SAVED.getText(), Outcome.PROVIDER_SERVICE_SAVED);
         }
         return sendMessage;

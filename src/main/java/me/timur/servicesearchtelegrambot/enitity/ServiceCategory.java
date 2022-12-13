@@ -15,7 +15,6 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
 @Table(name = "service_category")
@@ -43,5 +42,13 @@ public class ServiceCategory extends BaseEntity{
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "ServiceCategory{" +
+                "name='" + name + '\'' +
+                ", active=" + active +
+                '}';
     }
 }

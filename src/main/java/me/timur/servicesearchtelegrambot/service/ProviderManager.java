@@ -27,7 +27,7 @@ public interface ProviderManager {
 
     void delete(Long providerId);
 
-    List<Provider> findAllByService(Service service);
+    List<Provider> findAllByServiceAndActiveSubscription(Service service);
 
     Provider getOrSave(UserDTO user);
 

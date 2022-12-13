@@ -15,6 +15,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProviderServiceRepository extends JpaRepository<ProviderService, Long> {
-    List<ProviderService> findAllByService(Service service);
+    List<ProviderService> findAllByServiceAndActiveTrue (Service service);
     Optional<ProviderService> findByProviderAndService(Provider provider, Service service);
 }
