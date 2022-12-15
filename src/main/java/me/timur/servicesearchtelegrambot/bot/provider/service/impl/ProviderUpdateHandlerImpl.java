@@ -20,10 +20,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.*;
@@ -285,7 +282,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         keyboard.add(Outcome.BACK.getText());
         return logAndKeyboard(
                 update,
-                Outcome.COMPANY_NAME.getText(),
+                "Напишите " + Outcome.COMPANY_NAME.getText().toLowerCase(Locale.ROOT),
                 keyboard,
                 1,
                 Outcome.COMPANY_NAME);
@@ -294,85 +291,105 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     @Override
     public SendMessage saveCompanyName(Update update) {
         final String newCommand = command(update);
-        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-            provider.setCompanyName(newCommand);
-            providerManager.save(provider);
-        }
+        Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+        provider.setCompanyName(newCommand);
+        providerManager.save(provider);
         return providerInfo(update);
     }
 
     @Override
-    public SendMessage requestWebsite(Update update) {
-        final String newCommand = command(update);
-        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-            provider.setCompanyAddress(newCommand);
-            providerManager.save(provider);
-        }
+    public SendMessage editCompanyAddress(Update update) {
         List<String> keyboard = new ArrayList<>();
-        keyboard.add(Outcome.SKIP.getText());
+        keyboard.add(Outcome.BACK.getText());
         return logAndKeyboard(
                 update,
-                Outcome.WEBSITE_REQUESTED.getText(),
+                "Напишите " + Outcome.COMPANY_ADDRESS_REQUESTED.getText().toLowerCase(Locale.ROOT),
+
                 keyboard,
                 1,
-                Outcome.WEBSITE_REQUESTED);
+                Outcome.COMPANY_ADDRESS_REQUESTED);
     }
 
     @Override
-    public SendMessage requestInstagram(Update update) {
+    public SendMessage saveCompanyAddress(Update update) {
         final String newCommand = command(update);
-        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-            provider.setWebsite(newCommand);
-            providerManager.save(provider);
-        }
-        List<String> keyboard = new ArrayList<>();
-        keyboard.add(Outcome.SKIP.getText());
-        return logAndKeyboard(
-                update,
-                Outcome.INSTAGRAM_REQUESTED.getText(),
-                keyboard,
-                1,
-                Outcome.INSTAGRAM_REQUESTED);
+        Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+        provider.setCompanyAddress(newCommand);
+        providerManager.save(provider);
+        return providerInfo(update);
     }
 
-    @Override
-    public SendMessage requestTelegram(Update update) {
-        final String newCommand = command(update);
-        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-            provider.setInstagram(newCommand);
-            providerManager.save(provider);
-        }
-        List<String> keyboard = new ArrayList<>();
-        keyboard.add(Outcome.SKIP.getText());
-        return logAndKeyboard(
-                update,
-                Outcome.TELEGRAM_REQUESTED.getText(),
-                keyboard,
-                1,
-                Outcome.TELEGRAM_REQUESTED);
-    }
-
-    @Override
-    public SendMessage requestCertificate(Update update) {
-        final String newCommand = command(update);
-        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-            provider.setTelegram(newCommand);
-            providerManager.save(provider);
-        }
-        List<String> keyboard = new ArrayList<>();
-        keyboard.add(Outcome.SKIP.getText());
-        return logAndKeyboard(
-                update,
-                Outcome.CERTIFICATE_REQUESTED.getText(),
-                keyboard,
-                1,
-                Outcome.CERTIFICATE_REQUESTED);
-    }
+//    @Override
+//    public SendMessage requestWebsite(Update update) {
+//        final String newCommand = command(update);
+//        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+//            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+//            provider.setCompanyAddress(newCommand);
+//            providerManager.save(provider);
+//        }
+//        List<String> keyboard = new ArrayList<>();
+//        keyboard.add(Outcome.SKIP.getText());
+//        return logAndKeyboard(
+//                update,
+//                Outcome.WEBSITE_REQUESTED.getText(),
+//                keyboard,
+//                1,
+//                Outcome.WEBSITE_REQUESTED);
+//    }
+//
+//    @Override
+//    public SendMessage requestInstagram(Update update) {
+//        final String newCommand = command(update);
+//        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+//            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+//            provider.setWebsite(newCommand);
+//            providerManager.save(provider);
+//        }
+//        List<String> keyboard = new ArrayList<>();
+//        keyboard.add(Outcome.SKIP.getText());
+//        return logAndKeyboard(
+//                update,
+//                Outcome.INSTAGRAM_REQUESTED.getText(),
+//                keyboard,
+//                1,
+//                Outcome.INSTAGRAM_REQUESTED);
+//    }
+//
+//    @Override
+//    public SendMessage requestTelegram(Update update) {
+//        final String newCommand = command(update);
+//        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+//            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+//            provider.setInstagram(newCommand);
+//            providerManager.save(provider);
+//        }
+//        List<String> keyboard = new ArrayList<>();
+//        keyboard.add(Outcome.SKIP.getText());
+//        return logAndKeyboard(
+//                update,
+//                Outcome.TELEGRAM_REQUESTED.getText(),
+//                keyboard,
+//                1,
+//                Outcome.TELEGRAM_REQUESTED);
+//    }
+//
+//    @Override
+//    public SendMessage requestCertificate(Update update) {
+//        final String newCommand = command(update);
+//        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+//            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+//            provider.setTelegram(newCommand);
+//            providerManager.save(provider);
+//        }
+//        List<String> keyboard = new ArrayList<>();
+//        keyboard.add(Outcome.SKIP.getText());
+//        return logAndKeyboard(
+//                update,
+//                Outcome.CERTIFICATE_REQUESTED.getText(),
+//                keyboard,
+//                1,
+//                Outcome.CERTIFICATE_REQUESTED);
+//    }
 //
 //    @Override
 //    public SendMessage requestCompanyInfo(Update update) {

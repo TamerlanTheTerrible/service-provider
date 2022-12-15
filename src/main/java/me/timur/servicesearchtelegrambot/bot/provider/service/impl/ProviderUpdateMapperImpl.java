@@ -71,6 +71,12 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             //save company name
             else if (lastChatCommand.equals(Outcome.COMPANY_NAME.name()) && !newCommand.equals(Outcome.BACK.getText()))
                 sendMessage = updateHandler.saveCompanyName(update);
+                //request company address
+            else if (newCommand.contains(Outcome.COMPANY_ADDRESS_REQUESTED.getText()))
+                sendMessage = updateHandler.editCompanyAddress(update);
+                //save company address
+            else if (lastChatCommand.equals(Outcome.COMPANY_ADDRESS_REQUESTED.name()) && !newCommand.equals(Outcome.BACK.getText()))
+                sendMessage = updateHandler.saveCompanyAddress(update);
 //            //if previous request was company address, then request company website
 //            else if (Objects.equals(lastChatCommand, Outcome.COMPANY_ADDRESS_REQUESTED.name()))
 //                sendMessage = updateHandler.requestWebsite(update);

@@ -18,6 +18,10 @@ public interface ProviderUpdateHandler {
 
     SendMessage requestServiceName(Update update);
 
+    SendMessage editCompanyAddress(Update update);
+
+    SendMessage saveCompanyAddress(Update update);
+
     SendMessage getServicesByCategoryName(Update update);
 
     SendMessage saveServiceIfServiceFoundOrSearchFurther(Update update);
@@ -36,13 +40,13 @@ public interface ProviderUpdateHandler {
 
     SendMessage saveCompanyName(Update update);
 
-    SendMessage requestWebsite(Update update);
-
-    SendMessage requestInstagram(Update update);
-
-    SendMessage requestTelegram(Update update);
-
-    SendMessage requestCertificate(Update update);
+//    SendMessage requestWebsite(Update update);
+//
+//    SendMessage requestInstagram(Update update);
+//
+//    SendMessage requestTelegram(Update update);
+//
+//    SendMessage requestCertificate(Update update);
 
     SendMessage requestCompanyInfo(Update update);
 
