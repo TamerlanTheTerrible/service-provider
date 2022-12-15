@@ -9,6 +9,8 @@ import lombok.Getter;
 @Getter
 public enum Command {
     START("/start"),
+    INFO("/info"),
+    MY_SERVICES("/services"),
     ACCEPT_QUERY("Принять запрос #"),
     DENY_QUERY("Отказать"),
     BACK_TO_CATEGORIES("Все категории")

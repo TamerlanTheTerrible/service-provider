@@ -52,6 +52,9 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             // start command called
             if (Objects.equals(newCommand, Command.START.getText()))
                 sendMessage = updateHandler.start(update);
+            // start command called
+            else if (Objects.equals(newCommand, Command.INFO.getText()))
+                sendMessage = updateHandler.providerInfo(update);
             //check if it is from the group
             else if (update.getChannelPost() != null && Objects.equals(update.getChannelPost().getChatId(), serviceSearChannelId))
                 replyList.addAll(updateHandler.handleQuery(update));

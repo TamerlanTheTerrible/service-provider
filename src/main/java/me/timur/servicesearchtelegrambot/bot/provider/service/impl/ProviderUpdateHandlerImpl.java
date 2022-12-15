@@ -222,6 +222,49 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     }
 
     @Override
+    public SendMessage providerInfo(Update update) {
+        Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+        List<String> keyboardValues = new ArrayList<>();
+
+        if (provider.getCompanyName() == null)
+            keyboardValues.add("➕ " + Outcome.COMPANY_NAME_REQUESTED.getText());
+        else
+            keyboardValues.add("✏️ " + Outcome.COMPANY_NAME_REQUESTED.getText() + ": " + provider.getCompanyName());
+
+        if (provider.getCompanyAddress() == null)
+            keyboardValues.add("➕ " + Outcome.COMPANY_ADDRESS_REQUESTED.getText());
+        else
+            keyboardValues.add("✏️ " + Outcome.COMPANY_ADDRESS_REQUESTED.getText() + ": " + provider.getCompanyAddress());
+
+        if (provider.getWebsite() == null)
+            keyboardValues.add("➕ " + Outcome.WEBSITE_REQUESTED.getText());
+        else
+            keyboardValues.add("✏️ " + Outcome.WEBSITE_REQUESTED.getText() + ": " + provider.getWebsite());
+
+        if (provider.getInstagram() == null)
+            keyboardValues.add("➕ " + Outcome.INSTAGRAM_REQUESTED.getText());
+        else
+            keyboardValues.add("✏️ " + Outcome.INSTAGRAM_REQUESTED.getText() + ": " + provider.getInstagram());
+
+        if (provider.getTelegram() == null)
+            keyboardValues.add("➕ " + Outcome.TELEGRAM_REQUESTED.getText());
+        else
+            keyboardValues.add("✏️ " + Outcome.TELEGRAM_REQUESTED.getText() + ": " + provider.getTelegram());
+
+        if (provider.getCertificateTgFileId() == null)
+            keyboardValues.add("➕ " + Outcome.CERTIFICATE_REQUESTED.getText());
+        else
+            keyboardValues.add("✏️ " + Outcome.CERTIFICATE_REQUESTED.getText() + ": Загружен ✅");
+
+        if (provider.getCompanyInformation() == null)
+            keyboardValues.add("➕ " + Outcome.COMPANY_INFO_REQUESTED.getText());
+        else
+            keyboardValues.add("✏️ " + Outcome.COMPANY_INFO_REQUESTED.getText() + ": " + provider.getCompanyInformation());
+
+        return logAndKeyboard(update, Outcome.MY_SERVICES.getText(), keyboardValues, keyboardRowSize, Outcome.MY_SERVICES);
+    }
+
+    @Override
     public SendMessage requestServiceName(Update update) {
         final String newCommand = command(update);
         if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {

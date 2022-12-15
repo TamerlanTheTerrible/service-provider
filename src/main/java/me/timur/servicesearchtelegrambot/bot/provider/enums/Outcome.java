@@ -26,6 +26,7 @@ public enum Outcome {
     PROVIDER_SERVICE_SAVED("Сервис сохранён"),
     RECEIVE_QUERY_NOTIFICATION("Запрос"),
 
+    MY_INFO("Моя анкета"),
     NAME_REQUESTED("Имя фамилия"),
     PHONE_REQUESTED("Телефонный номер"),
     COMPANY_NAME_REQUESTED("Название фирмы"),
@@ -34,7 +35,7 @@ public enum Outcome {
     INSTAGRAM_REQUESTED("Инстаграм аккаунт"),
     TELEGRAM_REQUESTED("Телеграм аккаунт/группа/канал"),
     CERTIFICATE_REQUESTED("Загрузите сертификат"),
-    COMPANY_INFO_REQUESTED("Напишите немного о компании/деятельности (максимум 255 символов)"),
+    COMPANY_INFO_REQUESTED("Напишите немного о деятельности "),
     SKIP("➡️Пропустить"),
 
     UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз"),

@@ -45,4 +45,6 @@ public interface ProviderUpdateHandler {
     SendMessage requestCertificate(Update update);
 
     SendMessage requestCompanyInfo(Update update);
+
+    SendMessage providerInfo(Update update);
 }
