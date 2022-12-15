@@ -14,13 +14,10 @@ import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
 import me.timur.servicesearchtelegrambot.service.QueryService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Contact;
-import org.telegram.telegrambots.meta.api.objects.Document;
-import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
@@ -227,9 +224,9 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         List<String> keyboardValues = new ArrayList<>();
 
         if (provider.getCompanyName() == null)
-            keyboardValues.add("➕ " + Outcome.COMPANY_NAME_REQUESTED.getText());
+            keyboardValues.add("➕ " + Outcome.COMPANY_NAME.getText());
         else
-            keyboardValues.add("✏️ " + Outcome.COMPANY_NAME_REQUESTED.getText() + ": " + provider.getCompanyName());
+            keyboardValues.add("✏️ " + Outcome.COMPANY_NAME.getText() + ": " + provider.getCompanyName());
 
         if (provider.getCompanyAddress() == null)
             keyboardValues.add("➕ " + Outcome.COMPANY_ADDRESS_REQUESTED.getText());
@@ -259,9 +256,9 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         if (provider.getCompanyInformation() == null)
             keyboardValues.add("➕ " + Outcome.COMPANY_INFO_REQUESTED.getText());
         else
-            keyboardValues.add("✏️ " + Outcome.COMPANY_INFO_REQUESTED.getText() + ": " + provider.getCompanyInformation());
+            keyboardValues.add("✏️ " + Outcome.COMPANY_INFO_REQUESTED.getText() + ": " + provider.getCompanyInformation().substring(0, provider.getCompanyInformation().length() / 5));
 
-        return logAndKeyboard(update, Outcome.MY_SERVICES.getText(), keyboardValues, keyboardRowSize, Outcome.MY_SERVICES);
+        return logAndKeyboard(update, Outcome.MY_INFO.getText(), keyboardValues, keyboardRowSize, Outcome.MY_SERVICES);
     }
 
     @Override
@@ -282,41 +279,27 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         return sendMessage;
     }
 
-
     @Override
-    public SendMessage requestCompanyName(Update update) {
-        final Contact contact = update.getMessage().getContact();
-        if (contact != null) {
-            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-            provider.setPhone(contact.getPhoneNumber());
-            providerManager.save(provider);
-        }
+    public SendMessage editCompanyName(Update update) {
         List<String> keyboard = new ArrayList<>();
-        keyboard.add(Outcome.SKIP.getText());
+        keyboard.add(Outcome.BACK.getText());
         return logAndKeyboard(
                 update,
-                Outcome.COMPANY_NAME_REQUESTED.getText(),
+                Outcome.COMPANY_NAME.getText(),
                 keyboard,
                 1,
-                Outcome.COMPANY_NAME_REQUESTED);
+                Outcome.COMPANY_NAME);
     }
 
     @Override
-    public SendMessage requestCompanyAddress(Update update) {
+    public SendMessage saveCompanyName(Update update) {
         final String newCommand = command(update);
         if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
             Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
             provider.setCompanyName(newCommand);
             providerManager.save(provider);
         }
-        List<String> keyboard = new ArrayList<>();
-        keyboard.add(Outcome.SKIP.getText());
-        return logAndKeyboard(
-                update,
-                Outcome.COMPANY_ADDRESS_REQUESTED.getText(),
-                keyboard,
-                1,
-                Outcome.COMPANY_ADDRESS_REQUESTED);
+        return providerInfo(update);
     }
 
     @Override

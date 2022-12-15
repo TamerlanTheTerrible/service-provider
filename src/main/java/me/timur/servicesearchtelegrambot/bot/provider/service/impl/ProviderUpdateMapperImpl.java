@@ -42,6 +42,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
 
     private List<SendMessage> tryToMap(Update update) {
         final List<String> serviceNames = serviceManager.getActiveServiceNames();
+        final List<String> companyInfoCommands = getCompanyInfoCommandTexts();
         final List<SendMessage> replyList = new ArrayList<>();
 
         SendMessage sendMessage = null;
@@ -53,7 +54,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             if (Objects.equals(newCommand, Command.START.getText()))
                 sendMessage = updateHandler.start(update);
             // start command called
-            else if (Objects.equals(newCommand, Command.INFO.getText()))
+            else if (Objects.equals(newCommand, Command.INFO.getText()) || (Objects.equals(newCommand, Outcome.BACK.getText()) && companyInfoCommands.stream().anyMatch(lastChatCommand::contains)))
                 sendMessage = updateHandler.providerInfo(update);
             //check if it is from the group
             else if (update.getChannelPost() != null && Objects.equals(update.getChannelPost().getChatId(), serviceSearChannelId))
@@ -64,9 +65,12 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             //if previous request was phone, then request company name
             else if (Objects.equals(lastChatCommand, Outcome.PHONE_REQUESTED.name()))
                 sendMessage = updateHandler.requestCompanyInfo(update);
-//            //if previous request was company name, then request company address
-//            else if (Objects.equals(lastChatCommand, Outcome.COMPANY_NAME_REQUESTED.name()))
-//                sendMessage = updateHandler.requestCompanyAddress(update);
+            //request company name
+            else if (newCommand.contains(Outcome.COMPANY_NAME.getText()))
+                sendMessage = updateHandler.editCompanyName(update);
+            //save company name
+            else if (lastChatCommand.equals(Outcome.COMPANY_NAME.name()) && !newCommand.equals(Outcome.BACK.getText()))
+                sendMessage = updateHandler.saveCompanyName(update);
 //            //if previous request was company address, then request company website
 //            else if (Objects.equals(lastChatCommand, Outcome.COMPANY_ADDRESS_REQUESTED.name()))
 //                sendMessage = updateHandler.requestWebsite(update);
@@ -117,5 +121,18 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             replyList.add(sendMessage);
 
         return replyList;
+    }
+
+    //TODO move to another service
+    private static List<String> getCompanyInfoCommandTexts() {
+        List<String> list = new ArrayList<>();
+        list.add(Outcome.COMPANY_NAME.name());
+        list.add(Outcome.COMPANY_ADDRESS_REQUESTED.name());
+        list.add(Outcome.WEBSITE_REQUESTED.name());
+        list.add(Outcome.INSTAGRAM_REQUESTED.name());
+        list.add(Outcome.TELEGRAM_REQUESTED.name());
+        list.add(Outcome.CERTIFICATE_REQUESTED.name());
+        list.add(Outcome.COMPANY_INFO_REQUESTED.name());
+        return list;
     }
 }

@@ -32,9 +32,9 @@ public interface ProviderUpdateHandler {
 
     SendMessage requestPhone(Update update);
 
-    SendMessage requestCompanyName(Update update);
+    SendMessage editCompanyName(Update update);
 
-    SendMessage requestCompanyAddress(Update update);
+    SendMessage saveCompanyName(Update update);
 
     SendMessage requestWebsite(Update update);
 

@@ -29,7 +29,7 @@ public enum Outcome {
     MY_INFO("Моя анкета"),
     NAME_REQUESTED("Имя фамилия"),
     PHONE_REQUESTED("Телефонный номер"),
-    COMPANY_NAME_REQUESTED("Название фирмы"),
+    COMPANY_NAME("Название фирмы"),
     COMPANY_ADDRESS_REQUESTED("Адрес фирмы"),
     WEBSITE_REQUESTED("Вэб-сайт"),
     INSTAGRAM_REQUESTED("Инстаграм аккаунт"),
@@ -37,6 +37,7 @@ public enum Outcome {
     CERTIFICATE_REQUESTED("Загрузите сертификат"),
     COMPANY_INFO_REQUESTED("Напишите немного о деятельности "),
     SKIP("➡️Пропустить"),
+    BACK("\uD83D\uDD19 Назад"),
 
     UNKNOWN_COMMAND("Неизвестная команда. Попробуйте еще раз"),
 
