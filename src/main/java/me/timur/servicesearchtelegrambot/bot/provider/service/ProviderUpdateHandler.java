@@ -22,6 +22,10 @@ public interface ProviderUpdateHandler {
 
     SendMessage saveCompanyAddress(Update update);
 
+    SendMessage editWebsite(Update update);
+
+    SendMessage saveWebsite(Update update);
+
     SendMessage getServicesByCategoryName(Update update);
 
     SendMessage saveServiceIfServiceFoundOrSearchFurther(Update update);
@@ -51,4 +55,16 @@ public interface ProviderUpdateHandler {
     SendMessage requestCompanyInfo(Update update);
 
     SendMessage providerInfo(Update update);
+
+    SendMessage editInstagram(Update update);
+
+    SendMessage saveInstagram(Update update);
+
+    SendMessage editTelegram(Update update);
+
+    SendMessage saveTelegram(Update update);
+
+    SendMessage editCertificate(Update update);
+
+    SendMessage saveCertificate(Update update);
 }

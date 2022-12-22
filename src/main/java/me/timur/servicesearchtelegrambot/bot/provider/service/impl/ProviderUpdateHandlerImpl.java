@@ -14,10 +14,12 @@ import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
 import me.timur.servicesearchtelegrambot.service.QueryService;
 import me.timur.servicesearchtelegrambot.service.ServiceManager;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Contact;
+import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.*;
@@ -304,7 +306,6 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         return logAndKeyboard(
                 update,
                 "Напишите " + Outcome.COMPANY_ADDRESS_REQUESTED.getText().toLowerCase(Locale.ROOT),
-
                 keyboard,
                 1,
                 Outcome.COMPANY_ADDRESS_REQUESTED);
@@ -315,6 +316,92 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         final String newCommand = command(update);
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         provider.setCompanyAddress(newCommand);
+        providerManager.save(provider);
+        return providerInfo(update);
+    }
+
+    @Override
+    public SendMessage editWebsite(Update update) {
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.BACK.getText());
+        return logAndKeyboard(
+                update,
+                "Напишите " + Outcome.WEBSITE_REQUESTED.getText().toLowerCase(Locale.ROOT),
+                keyboard,
+                1,
+                Outcome.WEBSITE_REQUESTED);
+    }
+
+    @Override
+    public SendMessage saveWebsite(Update update) {
+        final String newCommand = command(update);
+        Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+        provider.setWebsite(newCommand);
+        providerManager.save(provider);
+        return providerInfo(update);
+    }
+
+    @Override
+    public SendMessage editInstagram(Update update) {
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.BACK.getText());
+        return logAndKeyboard(
+                update,
+                "Напишите " + Outcome.INSTAGRAM_REQUESTED.getText().toLowerCase(Locale.ROOT),
+                keyboard,
+                1,
+                Outcome.INSTAGRAM_REQUESTED);
+    }
+
+    @Override
+    public SendMessage saveInstagram(Update update) {
+        final String newCommand = command(update);
+        Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+        provider.setInstagram(newCommand);
+        providerManager.save(provider);
+        return providerInfo(update);
+    }
+
+    @Override
+    public SendMessage editTelegram(Update update) {
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.BACK.getText());
+        return logAndKeyboard(
+                update,
+                "Напишите " + Outcome.TELEGRAM_REQUESTED.getText().toLowerCase(Locale.ROOT),
+                keyboard,
+                1,
+                Outcome.TELEGRAM_REQUESTED);
+    }
+
+    @Override
+    public SendMessage saveTelegram(Update update) {
+        final String newCommand = command(update);
+        Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+        provider.setTelegram(newCommand);
+        providerManager.save(provider);
+        return providerInfo(update);
+    }
+
+    @Override
+    public SendMessage editCertificate(Update update) {
+        List<String> keyboard = new ArrayList<>();
+        keyboard.add(Outcome.BACK.getText());
+        return logAndKeyboard(
+                update,
+                Outcome.CERTIFICATE_REQUESTED.getText().toLowerCase(Locale.ROOT),
+                keyboard,
+                1,
+                Outcome.CERTIFICATE_REQUESTED);
+    }
+
+    @Override
+    public SendMessage saveCertificate(Update update) {
+        Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+        final Document document = update.getMessage().getDocument();
+        provider.setCertificateTgFileId(document.getFileId());
+        provider.setCertificateMyType(FilenameUtils.getExtension(document.getFileName()));
+        providerManager.save(provider);
         providerManager.save(provider);
         return providerInfo(update);
     }
@@ -416,8 +503,6 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 //                1,
 //                Outcome.COMPANY_INFO_REQUESTED);
 //    }
-
-    //TODO a method to save company info and carry on with saving service to be provided
 
     @Override
     public SendMessage getServicesByCategoryName(Update update) {

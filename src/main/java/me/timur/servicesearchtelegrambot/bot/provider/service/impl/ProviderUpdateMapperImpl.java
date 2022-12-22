@@ -48,12 +48,12 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
         SendMessage sendMessage = null;
 
         try {
-            final String newCommand = command(update);
+            final String newCommand = command(update) != null ? command(update) : "";
             final String lastChatCommand = chatLogService.getLastChatOutcome(update);
             // start command called
             if (Objects.equals(newCommand, Command.START.getText()))
                 sendMessage = updateHandler.start(update);
-            // start command called
+            //
             else if (Objects.equals(newCommand, Command.INFO.getText()) || (Objects.equals(newCommand, Outcome.BACK.getText()) && companyInfoCommands.stream().anyMatch(lastChatCommand::contains)))
                 sendMessage = updateHandler.providerInfo(update);
             //check if it is from the group
@@ -77,6 +77,30 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
                 //save company address
             else if (lastChatCommand.equals(Outcome.COMPANY_ADDRESS_REQUESTED.name()) && !newCommand.equals(Outcome.BACK.getText()))
                 sendMessage = updateHandler.saveCompanyAddress(update);
+                //request website
+            else if (newCommand.contains(Outcome.WEBSITE_REQUESTED.getText()))
+                sendMessage = updateHandler.editWebsite(update);
+                //save website
+            else if (lastChatCommand.equals(Outcome.WEBSITE_REQUESTED.name()) && !newCommand.equals(Outcome.BACK.getText()))
+                sendMessage = updateHandler.saveWebsite(update);
+                //request instagram
+            else if (newCommand.contains(Outcome.INSTAGRAM_REQUESTED.getText()))
+                sendMessage = updateHandler.editInstagram(update);
+                //save instagram
+            else if (lastChatCommand.equals(Outcome.INSTAGRAM_REQUESTED.name()) && !newCommand.equals(Outcome.BACK.getText()))
+                sendMessage = updateHandler.saveInstagram(update);
+                //request telegram
+            else if (newCommand.contains(Outcome.TELEGRAM_REQUESTED.getText()))
+                sendMessage = updateHandler.editTelegram(update);
+                //save telegram
+            else if (lastChatCommand.equals(Outcome.TELEGRAM_REQUESTED.name()) && !newCommand.equals(Outcome.BACK.getText()))
+                sendMessage = updateHandler.saveTelegram(update);
+                //request certificate
+            else if (newCommand.contains(Outcome.CERTIFICATE_REQUESTED.getText()))
+                sendMessage = updateHandler.editCertificate(update);
+                //save certificate
+            else if (lastChatCommand.equals(Outcome.CERTIFICATE_REQUESTED.name()) && !newCommand.equals(Outcome.BACK.getText()))
+                sendMessage = updateHandler.saveCertificate(update);
 //            //if previous request was company address, then request company website
 //            else if (Objects.equals(lastChatCommand, Outcome.COMPANY_ADDRESS_REQUESTED.name()))
 //                sendMessage = updateHandler.requestWebsite(update);
