@@ -59,6 +59,18 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             // new service command called
             else if (Objects.equals(newCommand, Command.NEW_SERVICE.getText()))
                 sendMessage = updateHandler.requestServiceName(update);
+            // my services command called
+            else if (Objects.equals(newCommand, Command.MY_SERVICES.getText()) || (Objects.equals(newCommand, Outcome.BACK.getText()) && Objects.equals(lastChatCommand, Outcome.SERVICE_EDIT_REQUESTED.name())))
+                sendMessage = updateHandler.getMyServices(update);
+            // edit my service
+            else if (Objects.equals(lastChatCommand, Command.MY_SERVICES.name()) && serviceNames.stream().anyMatch(s -> newCommand.contains(s)))
+                sendMessage = updateHandler.editProviderService(update);
+            // unsubscribe my service
+            else if (newCommand.contains(Command.UNSUBSCRIBE_FROM_SERVICE.getText()))
+                sendMessage = updateHandler.unsubscribeFromService(update);
+            // unsubscribe my service
+            else if (newCommand.contains(Command.SUBSCRIBE_TO_SERVICE.getText()))
+                sendMessage = updateHandler.subscribeToService(update);
             //check if it is from the group
             else if (update.getChannelPost() != null && Objects.equals(update.getChannelPost().getChatId(), serviceSearChannelId))
                 replyList.addAll(updateHandler.handleQuery(update));

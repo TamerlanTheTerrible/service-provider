@@ -406,103 +406,80 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         return providerInfo(update);
     }
 
-//    @Override
-//    public SendMessage requestWebsite(Update update) {
-//        final String newCommand = command(update);
-//        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-//            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-//            provider.setCompanyAddress(newCommand);
-//            providerManager.save(provider);
-//        }
-//        List<String> keyboard = new ArrayList<>();
-//        keyboard.add(Outcome.SKIP.getText());
-//        return logAndKeyboard(
-//                update,
-//                Outcome.WEBSITE_REQUESTED.getText(),
-//                keyboard,
-//                1,
-//                Outcome.WEBSITE_REQUESTED);
-//    }
-//
-//    @Override
-//    public SendMessage requestInstagram(Update update) {
-//        final String newCommand = command(update);
-//        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-//            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-//            provider.setWebsite(newCommand);
-//            providerManager.save(provider);
-//        }
-//        List<String> keyboard = new ArrayList<>();
-//        keyboard.add(Outcome.SKIP.getText());
-//        return logAndKeyboard(
-//                update,
-//                Outcome.INSTAGRAM_REQUESTED.getText(),
-//                keyboard,
-//                1,
-//                Outcome.INSTAGRAM_REQUESTED);
-//    }
-//
-//    @Override
-//    public SendMessage requestTelegram(Update update) {
-//        final String newCommand = command(update);
-//        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-//            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-//            provider.setInstagram(newCommand);
-//            providerManager.save(provider);
-//        }
-//        List<String> keyboard = new ArrayList<>();
-//        keyboard.add(Outcome.SKIP.getText());
-//        return logAndKeyboard(
-//                update,
-//                Outcome.TELEGRAM_REQUESTED.getText(),
-//                keyboard,
-//                1,
-//                Outcome.TELEGRAM_REQUESTED);
-//    }
-//
-//    @Override
-//    public SendMessage requestCertificate(Update update) {
-//        final String newCommand = command(update);
-//        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-//            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-//            provider.setTelegram(newCommand);
-//            providerManager.save(provider);
-//        }
-//        List<String> keyboard = new ArrayList<>();
-//        keyboard.add(Outcome.SKIP.getText());
-//        return logAndKeyboard(
-//                update,
-//                Outcome.CERTIFICATE_REQUESTED.getText(),
-//                keyboard,
-//                1,
-//                Outcome.CERTIFICATE_REQUESTED);
-//    }
-//
-//    @Override
-//    public SendMessage requestCompanyInfo(Update update) {
-//        Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-//        if ( update.getMessage().getDocument() != null) {
-//            final Document document = update.getMessage().getDocument();
-//            provider.setCertificateTgFileId(document.getFileId());
-//            provider.setCertificateMyType(FilenameUtils.getExtension(document.getFileName()));
-//            providerManager.save(provider);
-//        } else if (update.getMessage().getPhoto() != null) {
-//            final List<PhotoSize> photoList = update.getMessage().getPhoto();
-//            PhotoSize photo = photoList.get(photoList.size()-1);
-//            provider.setCertificateTgFileId(photo.getFileId());
-//            provider.setCertificateMyType("jpeg");
-//            providerManager.save(provider);
-//        }
-//        List<String> keyboard = new ArrayList<>();
-//        keyboard.add(Outcome.SKIP.getText());
-//;
-//        return logAndKeyboard(
-//                update,
-//                Outcome.COMPANY_INFO_REQUESTED.getText(),
-//                keyboard,
-//                1,
-//                Outcome.COMPANY_INFO_REQUESTED);
-//    }
+    @Override
+    public SendMessage getMyServices(Update update) {
+        List<String> servicesNames = providerServiceRepository.findAllByProviderUserTelegramId(tgUserId(update))
+                .stream()
+                .map(ps -> (ps.getActive() ? "\uD83D\uDFE2 " : "\uD83D\uDD34 ") + ps.getService().getName())
+                .collect(Collectors.toList());
+        return logAndKeyboard(update, Outcome.MY_SERVICES.getText(), servicesNames, keyboardRowSize, Outcome.MY_SERVICES);
+    }
+
+    @Override
+    public SendMessage editProviderService(Update update) {
+        String command = command(update);
+        String serviceName = command.substring(command.indexOf(" ")+1);
+        Optional<ProviderService> serviceOpt = providerServiceRepository.findByService(
+                serviceManager.getServiceByName(serviceName)
+        );
+
+        if (serviceOpt.isPresent()) {
+            ProviderService service = serviceOpt.get();
+            String text = Outcome.SERVICE_EDIT_REQUESTED.getText();
+            String button = (service.getActive() ? Command.UNSUBSCRIBE_FROM_SERVICE.getText() : Command.SUBSCRIBE_TO_SERVICE.getText())
+                    + " " + serviceName;
+            List<String> buttons = new ArrayList<>();
+            buttons.add(button);
+            buttons.add(Outcome.BACK.getText());
+            return logAndKeyboard(update, text, buttons, 1, Outcome.SERVICE_EDIT_REQUESTED);
+        }
+
+        return null;
+    }
+
+    @Override
+    public SendMessage unsubscribeFromService(Update update) {
+        //get service
+        String serviceName = command(update).substring(Command.UNSUBSCRIBE_FROM_SERVICE.getText().length()+1);
+        Optional<ProviderService> serviceOpt = providerServiceRepository.findByService(
+                serviceManager.getServiceByName(serviceName)
+        );
+
+        if (serviceOpt.isPresent()) {
+            //update service
+            ProviderService service = serviceOpt.get();
+            service.setActive(false);
+            providerServiceRepository.save(service);
+            //send reply
+            SendMessage msg = logAndMessage(update, Outcome.SERVICE_UNSUBSCRIBED.getText(), Outcome.SERVICE_UNSUBSCRIBED);
+            msg.setReplyMarkup(KeyboardUtil.removeKeyBoard());
+            return msg;
+        }
+
+        return null;
+    }
+
+    @Override
+    public SendMessage subscribeToService(Update update) {
+        //get service
+        String serviceName = command(update).substring(Command.SUBSCRIBE_TO_SERVICE.getText().length()+1);
+        Optional<ProviderService> serviceOpt = providerServiceRepository.findByService(
+                serviceManager.getServiceByName(serviceName)
+        );
+
+        if (serviceOpt.isPresent()) {
+            //update service
+            ProviderService service = serviceOpt.get();
+            service.setActive(true);
+            providerServiceRepository.save(service);
+            //send reply
+            SendMessage msg = logAndMessage(update, Outcome.SERVICE_SUBSCRIBED.getText(), Outcome.SERVICE_SUBSCRIBED);
+            msg.setReplyMarkup(KeyboardUtil.removeKeyBoard());
+            return msg;
+        }
+
+        return null;
+    }
 
     @Override
     public SendMessage getServicesByCategoryName(Update update) {

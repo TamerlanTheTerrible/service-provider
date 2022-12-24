@@ -44,14 +44,6 @@ public interface ProviderUpdateHandler {
 
     SendMessage saveCompanyName(Update update);
 
-//    SendMessage requestWebsite(Update update);
-//
-//    SendMessage requestInstagram(Update update);
-//
-//    SendMessage requestTelegram(Update update);
-//
-//    SendMessage requestCertificate(Update update);
-
     SendMessage requestCompanyInfo(Update update);
 
     SendMessage providerInfo(Update update);
@@ -67,4 +59,12 @@ public interface ProviderUpdateHandler {
     SendMessage editCertificate(Update update);
 
     SendMessage saveCertificate(Update update);
+
+    SendMessage getMyServices(Update update);
+
+    SendMessage editProviderService(Update update);
+
+    SendMessage unsubscribeFromService(Update update);
+
+    SendMessage subscribeToService(Update update);
 }

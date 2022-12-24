@@ -15,8 +15,11 @@ public enum Outcome {
     CATEGORIES("Выбрать из общего списка"),
     SERVICES("Выбрать из общего списка"),
 
-    MY_SERVICES("/services"),
+    MY_SERVICES("Мои услуги (\uD83D\uDD34-активные, \uD83D\uDFE2-не активные"),
     COMPANY_INFO("/info"),
+    SERVICE_EDIT_REQUESTED("Подписаться/Отписаться"),
+    SERVICE_SUBSCRIBED("Успешно подписались на сервис"),
+    SERVICE_UNSUBSCRIBED("Успешно отписались от сервиса"),
 
     QUERY_ACCEPTED("Запрос принят"),
     QUERY_DENIED("Запрос отказан"),
