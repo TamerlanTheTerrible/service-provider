@@ -53,9 +53,12 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             // start command called
             if (Objects.equals(newCommand, Command.START.getText()))
                 sendMessage = updateHandler.start(update);
-            //
+            // info command called
             else if (Objects.equals(newCommand, Command.INFO.getText()) || (Objects.equals(newCommand, Outcome.BACK.getText()) && companyInfoCommands.stream().anyMatch(lastChatCommand::contains)))
                 sendMessage = updateHandler.providerInfo(update);
+            // new service command called
+            else if (Objects.equals(newCommand, Command.NEW_SERVICE.getText()))
+                sendMessage = updateHandler.requestServiceName(update);
             //check if it is from the group
             else if (update.getChannelPost() != null && Objects.equals(update.getChannelPost().getChatId(), serviceSearChannelId))
                 replyList.addAll(updateHandler.handleQuery(update));
@@ -101,22 +104,6 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
                 //save certificate
             else if (lastChatCommand.equals(Outcome.CERTIFICATE_REQUESTED.name()) && !newCommand.equals(Outcome.BACK.getText()))
                 sendMessage = updateHandler.saveCertificate(update);
-//            //if previous request was company address, then request company website
-//            else if (Objects.equals(lastChatCommand, Outcome.COMPANY_ADDRESS_REQUESTED.name()))
-//                sendMessage = updateHandler.requestWebsite(update);
-//            //if previous request was website, then request instagram
-//            else if (Objects.equals(lastChatCommand, Outcome.WEBSITE_REQUESTED.name()))
-//                sendMessage = updateHandler.requestInstagram(update);
-//            //if previous request was instagram, then request telegram
-//            else if (Objects.equals(lastChatCommand, Outcome.INSTAGRAM_REQUESTED.name()))
-//                sendMessage = updateHandler.requestTelegram(update);
-//            //if previous request was telegram, then request certificate
-//            else if (Objects.equals(lastChatCommand, Outcome.TELEGRAM_REQUESTED.name()))
-//                sendMessage = updateHandler.requestCertificate(update);
-//            //if previous request was certificate, then request company description
-//            else if (Objects.equals(lastChatCommand, Outcome.CERTIFICATE_REQUESTED.name()))
-//                sendMessage = updateHandler.requestCompanyInfo(update);
-//            //if previous request was company description, then request service name
             else if (Objects.equals(lastChatCommand, Outcome.COMPANY_INFO_REQUESTED.name()))
                 sendMessage = updateHandler.requestServiceName(update);
             // accept query

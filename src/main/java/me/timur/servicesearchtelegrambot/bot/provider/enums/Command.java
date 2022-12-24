@@ -10,6 +10,7 @@ import lombok.Getter;
 public enum Command {
     START("/start"),
     INFO("/info"),
+    NEW_SERVICE("/newservice"),
     MY_SERVICES("/services"),
     ACCEPT_QUERY("Принять запрос #"),
     DENY_QUERY("Отказать"),
