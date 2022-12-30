@@ -2,6 +2,7 @@ package me.timur.servicesearchtelegrambot.bot.provider;
 
 import lombok.RequiredArgsConstructor;
 import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
@@ -23,8 +24,10 @@ public class ProviderBot extends TelegramLongPollingBot {
 
     private final ProviderUpdateMapper providerUpdateMapper;
 
-    private final static String BOT_NAME = "UzserviceproviderBot";
-    private final static String BOT_TOKEN = "5619769900:AAGHABIkbQ7DkItKLowv6N4cm_uW3rN4M1U";
+    @Value("${bot.username}")
+    private String BOT_NAME;
+    @Value("${bot.token}")
+    private String BOT_TOKEN;
 
     @Override
     public String getBotUsername() {
