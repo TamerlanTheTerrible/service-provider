@@ -34,6 +34,9 @@ public class Query extends BaseEntity{
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
+    @Column(name = "comment")
+    private String comment;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

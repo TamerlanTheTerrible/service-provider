@@ -115,7 +115,10 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
                 List<String> keyboardTexts = new ArrayList<>();
                 keyboardTexts.add(Command.ACCEPT_QUERY.getText() + queryId);
                 keyboardTexts.add(Command.DENY_QUERY.getText());
-                messages.add(keyboard(chatId, "Новый запрос #" + queryId, keyboardTexts, keyboardRowSize));
+                messages.add(keyboard(
+                        chatId,
+                        "Новый запрос #" + queryId + (query.getComment() != null ? "\n" + query.getComment() : ""),
+                        keyboardTexts, keyboardRowSize));
             }
             //send provider id list to channel
             SendMessage channelReply = message(
