@@ -10,6 +10,7 @@ import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
 import me.timur.servicesearchtelegrambot.enitity.*;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
 import me.timur.servicesearchtelegrambot.repository.ProviderServiceRepository;
+import me.timur.servicesearchtelegrambot.repository.ProviderServiceSubscriptionRepository;
 import me.timur.servicesearchtelegrambot.service.ChatLogService;
 import me.timur.servicesearchtelegrambot.service.ProviderManager;
 import me.timur.servicesearchtelegrambot.service.QueryService;
@@ -22,6 +23,8 @@ import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,13 +43,14 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     private final ChatLogService chatLogService;
     private final ServiceManager serviceManager;
     private final ProviderServiceRepository providerServiceRepository;
+    private final ProviderServiceSubscriptionRepository subscriptionRepository;
     private final QueryService queryService;
     private final NotificationService notificationService;
 
     @Value("${keyboard.size.row}")
     private Integer keyboardRowSize;
 
-    @Value("${channel.service.searcher.id.dev}")
+    @Value("${channel.service.searcher.id}")
     private String serviceSearchChannelId;
 
     @Override
@@ -115,7 +119,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
             }
             //send provider id list to channel
             SendMessage channelReply = message(
-                    update.getChannelPost().getChatId().toString(),
+                    serviceSearchChannelId,
                     "#" + queryId + " provider IDs: " + providers
                             .stream()
                             .map(p -> String.valueOf(p.getId()))
@@ -507,7 +511,8 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         if (providerServiceOpt.isPresent()) {
             sendMessage = logAndMessage(update, Outcome.PROVIDER_SERVICE_ALREADY_EXISTS.getText(), Outcome.PROVIDER_SERVICE_ALREADY_EXISTS);
         } else {
-            providerServiceRepository.save(new ProviderService(provider, service, false));
+            final ProviderService providerService = providerServiceRepository.save(new ProviderService(provider, service, true));
+            subscriptionRepository.save(new ProviderServiceSubscription(providerService, LocalDate.now(), LocalDate.now().plusYears(10)));
             sendMessage = logAndMessage(update, Outcome.PROVIDER_SERVICE_SAVED.getText(), Outcome.PROVIDER_SERVICE_SAVED);
         }
         return sendMessage;

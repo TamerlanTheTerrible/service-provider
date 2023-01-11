@@ -23,6 +23,7 @@ public enum Outcome {
 
     QUERY_ACCEPTED("Запрос принят"),
     QUERY_DENIED("Запрос отказан"),
+    QUERY_NOTIFIED(""),
 //    BACK_TO_CATEGORIES("Все категории"),
 
     PROVIDER_SERVICE_ALREADY_EXISTS("Этот сервис у Вас уже зарегистрирован"),

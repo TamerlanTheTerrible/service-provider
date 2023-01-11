@@ -32,7 +32,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
     private final ChatLogService chatLogService;
     private final ServiceManager serviceManager;
 
-    @Value("${channel.service.searcher.id.dev}")
+    @Value("${channel.service.searcher.id}")
     private Long serviceSearChannelId;
 
     @Override
@@ -49,7 +49,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
 
         try {
             final String newCommand = command(update) != null ? command(update) : "";
-            final String lastChatCommand = chatLogService.getLastChatOutcome(update);
+            final String lastChatCommand = chatLogService.getLastChatOutcome(update) != null ? chatLogService.getLastChatOutcome(update) : "";
             // start command called
             if (Objects.equals(newCommand, Command.START.getText()))
                 sendMessage = updateHandler.start(update);

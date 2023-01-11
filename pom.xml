@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>me.timur</groupId>
-    <artifactId>service-search-telegram-bot</artifactId>
+    <artifactId>service-provider-telegram-bot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>service-search-telegram-bot</name>
-    <description>service-search-telegram-bot</description>
+    <name>service-provider-telegram-bot</name>
+    <description>service-provider-telegram-bot</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
