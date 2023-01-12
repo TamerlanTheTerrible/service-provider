@@ -117,7 +117,9 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
                 keyboardTexts.add(Command.DENY_QUERY.getText());
                 messages.add(keyboard(
                         chatId,
-                        "Новый запрос #" + queryId + (query.getComment() != null ? "\n" + query.getComment() : ""),
+                        "Новый запрос #" + queryId
+                        + "\n" + query.getService().getName()
+                        + (query.getComment() != null ? "\n" + query.getComment() : ""),
                         keyboardTexts, keyboardRowSize));
             }
             //send provider id list to channel
@@ -426,7 +428,8 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     public SendMessage editProviderService(Update update) {
         String command = command(update);
         String serviceName = command.substring(command.indexOf(" ")+1);
-        Optional<ProviderService> serviceOpt = providerServiceRepository.findByService(
+        Optional<ProviderService> serviceOpt = providerServiceRepository.findByProviderAndService(
+                providerManager.getByUserTelegramId(tgUserId(update)),
                 serviceManager.getServiceByName(serviceName)
         );
 
