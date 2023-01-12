@@ -106,7 +106,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
             //get providers who can handle the query
             Query query = queryService.getById(queryId);
-            List<Provider> providers = providerManager.findAllByServiceAndActiveSubscription(query.getService());
+            List<Provider> providers = providerManager.findAllByServiceAndRegionAndActiveSubscription(query.getService(), query.getClient().getRegion());
 
             //prepare notifications for those providers
             List<SendMessage> messages = new ArrayList<>();
@@ -123,12 +123,14 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
                         keyboardTexts, keyboardRowSize));
             }
             //send provider id list to channel
+            final String providerIds = providers
+                    .stream()
+                    .map(p -> String.valueOf(p.getId()))
+                    .collect(Collectors.joining(", "));
+
             SendMessage channelReply = message(
                     serviceSearchChannelId,
-                    "#" + queryId + " provider IDs: " + providers
-                            .stream()
-                            .map(p -> String.valueOf(p.getId()))
-                            .collect(Collectors.joining(", "))
+                    "#" + queryId + " provider IDs: " + (providerIds.isEmpty() ? "NOT FOUND" : providerIds)
             );
 
             messages.add(channelReply);

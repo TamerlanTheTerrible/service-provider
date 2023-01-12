@@ -1,8 +1,8 @@
 package me.timur.servicesearchtelegrambot.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import me.timur.servicesearchtelegrambot.bot.provider.enums.Region;
 import me.timur.servicesearchtelegrambot.enitity.Provider;
-import me.timur.servicesearchtelegrambot.enitity.ProviderService;
 import me.timur.servicesearchtelegrambot.enitity.User;
 import me.timur.servicesearchtelegrambot.exception.ResourceNotFoundException;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
@@ -16,7 +16,6 @@ import me.timur.servicesearchtelegrambot.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -78,9 +77,9 @@ public class ProviderManagerImpl implements ProviderManager {
     }
 
     @Override
-    public List<Provider> findAllByServiceAndActiveSubscription(me.timur.servicesearchtelegrambot.enitity.Service service) {
+    public List<Provider> findAllByServiceAndRegionAndActiveSubscription(me.timur.servicesearchtelegrambot.enitity.Service service, Region region) {
         return subscriptionRepository
-                .findByProviderServiceServiceAndEndDateAfterOrderByStartDateDesc(service, LocalDate.now())
+                .findAllByProviderServiceServiceAndProviderServiceProviderRegionAndEndDateAfterOrderByStartDateDesc(service, region, LocalDate.now())
                 .stream()
                 .filter(s -> s.getProviderService().getActive())
                 .map(s -> s.getProviderService().getProvider())
