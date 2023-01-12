@@ -69,4 +69,6 @@ public interface ProviderUpdateHandler {
     SendMessage unsubscribeFromService(Update update);
 
     SendMessage subscribeToService(Update update);
+
+    SendMessage getQueries(Update update);
 }

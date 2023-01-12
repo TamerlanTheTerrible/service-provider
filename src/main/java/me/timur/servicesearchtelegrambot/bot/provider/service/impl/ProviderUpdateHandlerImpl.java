@@ -522,6 +522,28 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     }
 
     @Override
+    public SendMessage getQueries(Update update) {
+        final Provider provider = providerManager.getByUserTelegramId(Long.valueOf(chatId(update)));
+        final List<Service> services = providerServiceRepository.findAllByProviderUserTelegramId(Long.valueOf(chatId(update)))
+                .stream().map(ProviderService::getService).collect(Collectors.toList());
+
+        List<String> queries = queryService.getAllByServicesAndRegion(services, provider.getRegion())
+                .stream().map(q -> "#" + q.getId() + " " + q.getService().getName() + (q.getComment() != null ? "\n" + q.getComment() : "")).collect(Collectors.toList());
+
+        if (queries.isEmpty()) {
+            return logAndMessage(update, Outcome.QUERY_NOT_FOUND.getText(), Outcome.QUERY_NOT_FOUND);
+        } else {
+            return logAndKeyboard(
+                    update,
+                    Outcome.QUERY_FOUND.getText(),
+                    queries,
+                    keyboardRowSize,
+                    Outcome.QUERY_FOUND
+            );
+        }
+    }
+
+    @Override
     public SendMessage getServicesByCategoryName(Update update) {
         List<String> servicesNames = serviceManager.getServicesNamesByCategoryName(command(update));
         ArrayList<String> modifiableList = new ArrayList<>(servicesNames);

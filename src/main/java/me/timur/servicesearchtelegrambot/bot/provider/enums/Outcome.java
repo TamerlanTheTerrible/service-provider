@@ -24,6 +24,9 @@ public enum Outcome {
     QUERY_ACCEPTED("Запрос принят"),
     QUERY_DENIED("Запрос отказан"),
     QUERY_NOTIFIED(""),
+    GET_QUERIES("/requests"),
+    QUERY_NOT_FOUND("Нет актуальных запросов"),
+    QUERY_FOUND("Актуальные запросы"),
 //    BACK_TO_CATEGORIES("Все категории"),
 
     PROVIDER_SERVICE_ALREADY_EXISTS("Этот сервис у Вас уже зарегистрирован"),

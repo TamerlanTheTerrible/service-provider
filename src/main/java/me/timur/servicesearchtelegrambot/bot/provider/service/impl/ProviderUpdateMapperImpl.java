@@ -56,6 +56,9 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             // info command called
             else if (Objects.equals(newCommand, Command.INFO.getText()) || (Objects.equals(newCommand, Outcome.BACK.getText()) && companyInfoCommands.stream().anyMatch(lastChatCommand::contains)))
                 sendMessage = updateHandler.providerInfo(update);
+            // requests command called
+            else if (Objects.equals(newCommand, Command.GET_QUERIES.getText()))
+                sendMessage = updateHandler.getQueries(update);
             // new service command called
             else if (Objects.equals(newCommand, Command.NEW_SERVICE.getText()))
                 sendMessage = updateHandler.requestServiceName(update);

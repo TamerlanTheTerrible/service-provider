@@ -12,6 +12,7 @@ public enum Command {
     INFO("/info"),
     NEW_SERVICE("/newservice"),
     MY_SERVICES("/services"),
+    GET_QUERIES("/requests"),
     SUBSCRIBE_TO_SERVICE("➕ Подписаться"),
     UNSUBSCRIBE_FROM_SERVICE("\uD83D\uDDD1 Отписаться"),
     ACCEPT_QUERY("Принять запрос #"),
