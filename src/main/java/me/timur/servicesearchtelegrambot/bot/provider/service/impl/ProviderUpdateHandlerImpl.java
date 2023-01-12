@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
+import me.timur.servicesearchtelegrambot.bot.provider.enums.Region;
 import me.timur.servicesearchtelegrambot.bot.provider.service.NotificationService;
 import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateHandler;
 import me.timur.servicesearchtelegrambot.bot.util.KeyboardUtil;
@@ -24,7 +25,6 @@ import org.telegram.telegrambots.meta.api.objects.Document;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -227,6 +227,24 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     }
 
     @Override
+    public SendMessage requestRegion(Update update) {
+        final String newCommand = command(update);
+        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
+            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
+            provider.setCompanyInformation(newCommand);
+            providerManager.save(provider);
+        }
+        
+        return logAndKeyboard(
+                update,
+                Outcome.REGION_REQUESTED.getText(),
+                Arrays.stream(Region.values()).map(r -> r.russian).collect(Collectors.toList()),
+                2,
+                Outcome.REGION_REQUESTED
+        );
+    }
+    
+    @Override
     public SendMessage providerInfo(Update update) {
         Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
         List<String> keyboardValues = new ArrayList<>();
@@ -271,20 +289,30 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
 
     @Override
     public SendMessage requestServiceName(Update update) {
-        final String newCommand = command(update);
-        if (!Objects.equals(newCommand, Outcome.SKIP.getText())) {
-            Provider provider = providerManager.getByUserTelegramId(tgUserId(update));
-            provider.setCompanyInformation(newCommand);
+        Region region = Region.getByRussian(command(update));
+        if (region == null) {
+            return logAndKeyboard(
+                    update,
+                    Outcome.REGION_REQUESTED.getText(),
+                    Arrays.stream(Region.values()).map(r -> r.russian).collect(Collectors.toList()),
+                    2,
+                    Outcome.REGION_REQUESTED
+            );
+        } else {
+            //set region for a provide
+            Provider provider = providerManager.getByUserTelegramId(Long.valueOf(chatId(update)));
+            provider.setRegion(region);
             providerManager.save(provider);
-        }
 
-        SendMessage sendMessage = logAndMessage(
-                update,
-                Outcome.REQUEST_SERVICE_NAME.getText(),
-                Outcome.REQUEST_SERVICE_NAME
-        );
-        sendMessage.setReplyMarkup(removeKeyboard());
-        return sendMessage;
+            //request service name
+            SendMessage sendMessage = logAndMessage(
+                    update,
+                    Outcome.REQUEST_SERVICE_NAME.getText(),
+                    Outcome.REQUEST_SERVICE_NAME
+            );
+            sendMessage.setReplyMarkup(removeKeyboard());
+            return sendMessage;
+        }
     }
 
     @Override

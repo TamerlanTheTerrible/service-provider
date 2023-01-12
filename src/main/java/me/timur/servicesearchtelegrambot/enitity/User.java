@@ -3,11 +3,10 @@ package me.timur.servicesearchtelegrambot.enitity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import me.timur.servicesearchtelegrambot.bot.provider.enums.Region;
 import me.timur.servicesearchtelegrambot.model.dto.UserDTO;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -38,6 +37,10 @@ public class User extends BaseEntity {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "region")
+    private Region region;
 
     public User(UserDTO dto) {
         this.telegramId = dto.getTelegramId();

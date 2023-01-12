@@ -116,7 +116,11 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
                 //save certificate
             else if (lastChatCommand.equals(Outcome.CERTIFICATE_REQUESTED.name()) && !newCommand.equals(Outcome.BACK.getText()))
                 sendMessage = updateHandler.saveCertificate(update);
+            // request company name
             else if (Objects.equals(lastChatCommand, Outcome.COMPANY_INFO_REQUESTED.name()))
+                sendMessage = updateHandler.requestRegion(update);
+            // request region
+            else if (Objects.equals(lastChatCommand, Outcome.REGION_REQUESTED.name()))
                 sendMessage = updateHandler.requestServiceName(update);
             // accept query
             else if (newCommand.contains(Command.ACCEPT_QUERY.getText()))

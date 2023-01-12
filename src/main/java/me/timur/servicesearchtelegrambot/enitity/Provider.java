@@ -2,6 +2,7 @@ package me.timur.servicesearchtelegrambot.enitity;
 
 import lombok.*;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.DocumentMimeType;
+import me.timur.servicesearchtelegrambot.bot.provider.enums.Region;
 import org.checkerframework.checker.compilermsgs.qual.UnknownCompilerMessageKey;
 import org.hibernate.Hibernate;
 
@@ -57,6 +58,10 @@ public class Provider extends BaseEntity{
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "region")
+    private Region region;
 
 //    @OneToMany(mappedBy = "provider", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
 //    private List<ProviderService> services;

@@ -46,6 +46,8 @@ public interface ProviderUpdateHandler {
 
     SendMessage requestCompanyInfo(Update update);
 
+    SendMessage requestRegion(Update update);
+
     SendMessage providerInfo(Update update);
 
     SendMessage editInstagram(Update update);
