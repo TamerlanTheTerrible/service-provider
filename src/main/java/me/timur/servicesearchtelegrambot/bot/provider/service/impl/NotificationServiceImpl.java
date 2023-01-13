@@ -8,17 +8,12 @@ import me.timur.servicesearchtelegrambot.bot.provider.dto.TelegramResponseDto;
 import me.timur.servicesearchtelegrambot.bot.provider.service.NotificationService;
 import me.timur.servicesearchtelegrambot.bot.provider.service.RestRequester;
 import me.timur.servicesearchtelegrambot.model.dto.ServiceProviderDTO;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

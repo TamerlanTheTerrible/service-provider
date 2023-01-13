@@ -23,6 +23,7 @@ public enum Outcome {
 
     QUERY_ACCEPTED("Запрос принят"),
     QUERY_DENIED("Запрос отказан"),
+    QUERY_DEACTIVATED("Запрос закрыт"),
     QUERY_NOTIFIED(""),
     GET_QUERIES("/requests"),
     QUERY_NOT_FOUND("Нет актуальных запросов"),
