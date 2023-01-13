@@ -52,7 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
         if (provider.getUser().getUsername() != null)
             stringBuilder.append("\nПользователь: @" + provider.getUser().getUsername());
         if (provider.getPhone() != null)
-            stringBuilder.append("\nТелефон: " + provider.getPhone());
+            stringBuilder.append("\nТелефон: +" + provider.getPhone());
         if (provider.getCompanyName() != null)
             stringBuilder.append("\nФирма: " + provider.getCompanyName());
         if (provider.getCompanyAddress() != null)
@@ -64,7 +64,7 @@ public class NotificationServiceImpl implements NotificationService {
         if (provider.getTelegram() != null)
             stringBuilder.append("\nТелеграм: " + provider.getTelegram());
         if (provider.getDateCreated() != null)
-            stringBuilder.append("\nО фирме: " + provider.getDateCreated());
+            stringBuilder.append("\nО фирме: " + provider.getDescription());
 
         restRequester.sendMessage(clientTgId, stringBuilder.toString());
     }
