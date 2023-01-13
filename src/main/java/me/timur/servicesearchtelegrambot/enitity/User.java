@@ -23,7 +23,7 @@ public class User extends BaseEntity {
     @Column(name = "telegram_id", nullable = false, unique = true)
     private Long telegramId;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "last_name")
