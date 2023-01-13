@@ -1,5 +1,6 @@
 package me.timur.servicesearchtelegrambot.service;
 
+import me.timur.servicesearchtelegrambot.bot.provider.enums.ChatLogType;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -9,5 +10,5 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface ChatLogService {
     void log(Update update, Outcome outcome);
-    String getLastChatOutcome(Update update);
+    String getLastChatOutcome(Update update, ChatLogType type);
 }

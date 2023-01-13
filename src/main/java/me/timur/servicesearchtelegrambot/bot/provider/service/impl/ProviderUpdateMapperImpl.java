@@ -2,6 +2,7 @@ package me.timur.servicesearchtelegrambot.bot.provider.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.timur.servicesearchtelegrambot.bot.provider.enums.ChatLogType;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Command;
 import me.timur.servicesearchtelegrambot.bot.provider.enums.Outcome;
 import me.timur.servicesearchtelegrambot.bot.provider.service.ProviderUpdateHandler;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.chatId;
 import static me.timur.servicesearchtelegrambot.bot.util.UpdateUtil.command;
 
 /**
@@ -49,7 +51,9 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
 
         try {
             final String newCommand = command(update) != null ? command(update) : "";
-            final String lastChatCommand = chatLogService.getLastChatOutcome(update) != null ? chatLogService.getLastChatOutcome(update) : "";
+            final String lastChatCommand = chatLogService.getLastChatOutcome(update, ChatLogType.PROVIDER) != null
+                    ? chatLogService.getLastChatOutcome(update, ChatLogType.PROVIDER)
+                    : "";
             // start command called
             if (Objects.equals(newCommand, Command.START.getText()))
                 sendMessage = updateHandler.start(update);
@@ -149,7 +153,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
 
 
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error("ERROR --- user: {} command: {} msg: {}", chatId(update), (command(update) != null ? command(update): "null command"), e.getMessage(), e);
             sendMessage = updateHandler.unknownCommand(update);
         }
 
