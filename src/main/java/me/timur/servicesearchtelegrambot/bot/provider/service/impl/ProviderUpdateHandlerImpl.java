@@ -533,8 +533,12 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
         final List<Service> services = providerServiceRepository.findAllByProviderUserTelegramId(Long.valueOf(chatId(update)))
                 .stream().map(ProviderService::getService).collect(Collectors.toList());
 
-        List<String> queries = queryService.getAllByServicesAndRegion(services, provider.getRegion())
-                .stream().map(q -> "#" + q.getId() + " " + q.getService().getName() + (q.getComment() != null ? "\n" + q.getComment() : "")).collect(Collectors.toList());
+        List<String> queries = queryService.getAllByServicesAndRegion(services, provider.getRegion()).stream()
+                .map(q ->  q.getService().getName()
+                        + (q.getComment() != null ? " / " + q.getComment() : "")
+                        + " / Заказ #" + q.getId()
+                )
+                .collect(Collectors.toList());
 
         if (queries.isEmpty()) {
             final SendMessage message = logAndMessage(update, Outcome.QUERY_NOT_FOUND.getText(), Outcome.QUERY_NOT_FOUND);

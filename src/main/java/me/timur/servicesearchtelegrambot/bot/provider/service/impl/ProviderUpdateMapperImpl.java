@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -146,6 +147,10 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
             // required service found
             else if ((lastChatCommand.equals(Outcome.SERVICES.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name())) && serviceNames.contains(newCommand)) {
                 sendMessage = updateHandler.saveServiceIfServiceFoundOrSearchFurther(update);
+            }
+            // select of actual queries
+            else if (lastChatCommand.equals(Outcome.QUERY_FOUND.name()) && newCommand.split(" ")[newCommand.split(" ").length-1].contains("#")) {
+                replyList.addAll(updateHandler.acceptQuery(update));
             }
             // searching a service
             else if (lastChatCommand.equals(Outcome.REQUEST_SERVICE_NAME.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_NOT_FOUND.name()) || lastChatCommand.equals(Outcome.SERVICE_SEARCH_FOUND.name()))
