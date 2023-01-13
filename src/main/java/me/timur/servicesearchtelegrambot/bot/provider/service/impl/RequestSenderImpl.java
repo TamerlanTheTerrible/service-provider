@@ -2,6 +2,7 @@ package me.timur.servicesearchtelegrambot.bot.provider.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import me.timur.servicesearchtelegrambot.bot.provider.service.RestRequester;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,8 +23,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class RequestSenderImpl implements RestRequester {
     private final static String BASE_URL = "https://api.telegram.org";
-    private final static String CURRENT_BOT_TOKEN_URL = "/bot5619769900:AAGHABIkbQ7DkItKLowv6N4cm_uW3rN4M1U";
-    private final static String SEARCH_BOT_TOKEN_URL = "/bot5452269303:AAGodrX6ZbfbFfo5GNkOK2CArsmyAqpdeyE";
+    @Value("${bot.token}")
+    private String CURRENT_BOT_TOKEN_URL;
+    @Value("${bot.search.token}")
+    private String SEARCH_BOT_TOKEN_URL;
 
 //    @Override
 //    public void sendDocument(String chatId, String fileId) {
@@ -65,7 +68,7 @@ public class RequestSenderImpl implements RestRequester {
     @Override
     public void sendMessage(String chatId, String text) {
         final UriComponents uriComponents = uriBuilder()
-                .path(SEARCH_BOT_TOKEN_URL)
+                .path("/bot" + SEARCH_BOT_TOKEN_URL)
                 .path("/sendMessage")
                 .queryParam("chat_id", chatId)
                 .queryParam("text", text)
@@ -77,7 +80,7 @@ public class RequestSenderImpl implements RestRequester {
     @Override
     public String getFilePath(String chatId, String fileId) {
         final UriComponents uriComponents = uriBuilder()
-                .path(CURRENT_BOT_TOKEN_URL)
+                .path("/bot" + CURRENT_BOT_TOKEN_URL)
                 .path("/getFile")
                 .queryParam("chat_id", chatId)
                 .queryParam("file_id", fileId)
@@ -90,7 +93,7 @@ public class RequestSenderImpl implements RestRequester {
     public String downloadFile(String filePath) {
         final UriComponents uriComponents = uriBuilder()
                 .path("/file")
-                .path(CURRENT_BOT_TOKEN_URL)
+                .path("/bot" + CURRENT_BOT_TOKEN_URL)
                 .path("/" + filePath)
                 .build();
 
@@ -102,7 +105,7 @@ public class RequestSenderImpl implements RestRequester {
 //        return new URL("https://api.telegram.org/file/bot"+CURRENT_BOT_TOKEN_URL+"/"+filePath).openStream();
         final UriComponents uriComponents = uriBuilder()
                 .path("/file")
-                .path(CURRENT_BOT_TOKEN_URL)
+                .path("/bot" + CURRENT_BOT_TOKEN_URL)
                 .path("/" + filePath)
                 .build();
 
@@ -114,7 +117,7 @@ public class RequestSenderImpl implements RestRequester {
     @Override
     public void sendDocument(String chatId, Resource resource) {
         final UriComponents uriComponents = uriBuilder()
-                .path(SEARCH_BOT_TOKEN_URL)
+                .path("/bot" + SEARCH_BOT_TOKEN_URL)
                 .path("/sendDocument")
                 .queryParam("chat_id", chatId)
                 .build();
@@ -131,7 +134,7 @@ public class RequestSenderImpl implements RestRequester {
     @Override
     public void sendPhoto(String chatId, Resource resource) {
         final UriComponents uriComponents = uriBuilder()
-                .path(SEARCH_BOT_TOKEN_URL)
+                .path("/bot" + SEARCH_BOT_TOKEN_URL)
                 .path("/sendPhoto")
                 .queryParam("chat_id", chatId)
                 .build();
