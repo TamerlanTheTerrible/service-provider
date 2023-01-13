@@ -290,7 +290,7 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
     }
 
     @Override
-    public SendMessage requestServiceName(Update update) {
+    public SendMessage saveRegionAndRequestService(Update update) {
         Region region = Region.getByRussian(command(update));
         if (region == null) {
             return logAndKeyboard(
@@ -307,15 +307,21 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
             providerManager.save(provider);
 
             //request service name
-            SendMessage sendMessage = logAndMessage(
-                    update,
-                    Outcome.REQUEST_SERVICE_NAME.getText(),
-                    Outcome.REQUEST_SERVICE_NAME
-            );
-            sendMessage.setReplyMarkup(removeKeyboard());
-            return sendMessage;
+            return requestService(update);
         }
     }
+
+    @Override
+    public SendMessage requestService(Update update) {
+        SendMessage sendMessage = logAndMessage(
+                update,
+                Outcome.REQUEST_SERVICE_NAME.getText(),
+                Outcome.REQUEST_SERVICE_NAME
+        );
+        sendMessage.setReplyMarkup(removeKeyboard());
+        return sendMessage;
+    }
+
 
     @Override
     public SendMessage editCompanyName(Update update) {
@@ -531,7 +537,9 @@ public class ProviderUpdateHandlerImpl implements ProviderUpdateHandler {
                 .stream().map(q -> "#" + q.getId() + " " + q.getService().getName() + (q.getComment() != null ? "\n" + q.getComment() : "")).collect(Collectors.toList());
 
         if (queries.isEmpty()) {
-            return logAndMessage(update, Outcome.QUERY_NOT_FOUND.getText(), Outcome.QUERY_NOT_FOUND);
+            final SendMessage message = logAndMessage(update, Outcome.QUERY_NOT_FOUND.getText(), Outcome.QUERY_NOT_FOUND);
+            message.setReplyMarkup(removeKeyboard());
+            return message;
         } else {
             return logAndKeyboard(
                     update,

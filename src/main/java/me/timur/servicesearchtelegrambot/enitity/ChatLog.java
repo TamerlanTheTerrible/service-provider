@@ -46,7 +46,7 @@ public class ChatLog extends BaseEntity{
         this.tgChatId = chatId(update);
         this.command = command(update);
         this.outcome = outcome;
-        this.logType = ChatLogType.CLIENT;
+        this.logType = ChatLogType.PROVIDER;
     }
 
 

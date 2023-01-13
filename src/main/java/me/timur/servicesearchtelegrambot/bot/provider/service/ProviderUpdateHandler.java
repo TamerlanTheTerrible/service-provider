@@ -16,7 +16,7 @@ public interface ProviderUpdateHandler {
 
     SendMessage getCategories(Update update);
 
-    SendMessage requestServiceName(Update update);
+    SendMessage saveRegionAndRequestService(Update update);
 
     SendMessage editCompanyAddress(Update update);
 
@@ -39,6 +39,8 @@ public interface ProviderUpdateHandler {
     SendMessage denyQuery(Update update);
 
     SendMessage requestPhone(Update update);
+
+    SendMessage requestService(Update update);
 
     SendMessage editCompanyName(Update update);
 

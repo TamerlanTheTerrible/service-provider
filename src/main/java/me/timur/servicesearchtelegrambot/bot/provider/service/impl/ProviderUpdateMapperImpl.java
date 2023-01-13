@@ -65,7 +65,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
                 sendMessage = updateHandler.getQueries(update);
             // new service command called
             else if (Objects.equals(newCommand, Command.NEW_SERVICE.getText()))
-                sendMessage = updateHandler.requestServiceName(update);
+                sendMessage = updateHandler.requestService(update);
             // my services command called
             else if (Objects.equals(newCommand, Command.MY_SERVICES.getText()) || (Objects.equals(newCommand, Outcome.BACK.getText()) && Objects.equals(lastChatCommand, Outcome.SERVICE_EDIT_REQUESTED.name())))
                 sendMessage = updateHandler.getMyServices(update);
@@ -128,7 +128,7 @@ public class ProviderUpdateMapperImpl implements ProviderUpdateMapper {
                 sendMessage = updateHandler.requestRegion(update);
             // request region
             else if (Objects.equals(lastChatCommand, Outcome.REGION_REQUESTED.name()))
-                sendMessage = updateHandler.requestServiceName(update);
+                sendMessage = updateHandler.saveRegionAndRequestService(update);
             // accept query
             else if (newCommand.contains(Command.ACCEPT_QUERY.getText()))
                 replyList.addAll(updateHandler.acceptQuery(update));
