@@ -28,43 +28,6 @@ public class RequestSenderImpl implements RestRequester {
     @Value("${bot.search.token}")
     private String SEARCH_BOT_TOKEN_URL;
 
-//    @Override
-//    public void sendDocument(String chatId, String fileId) {
-//        log.info("Sending file {} to {}", fileId, chatId);
-//        try {
-//            //get file info
-//            RestTemplate restTemplate = new RestTemplate();
-//            String getDocumentInfoUrl = BASE_URL + CURRENT_BOT_TOKEN_URL + "/getFile" + "?chat_id="+ chatId +"&file_id=" + fileId;
-//            final ResponseEntity<TelegramResponseDto> getDocResponse = restTemplate.getForEntity(getDocumentInfoUrl, TelegramResponseDto.class);
-//            Map<String, String> getDocResponseBody =  (Map<String, String>)getDocResponse.getBody().getResult();
-//
-//            //download file
-//            final String filePath = getDocResponseBody.get("file_path");
-//            String getDocumentUrl = BASE_URL + "/file" + CURRENT_BOT_TOKEN_URL + "/" + filePath;
-//            final byte[] bytes = restTemplate.getForEntity(getDocumentUrl, String.class).getBody().getBytes();
-//            Path path = Paths.get("./certificate." + FilenameUtils.getExtension(filePath));
-//            if (path.toFile().exists()) {
-//                Files.delete(path);
-//            }
-//            Files.createFile(path);
-//            Files.write(path, bytes);
-//
-//            //send file
-//            Resource resource = new UrlResource(path.toUri());
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-//            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-//            body.add("document", resource);
-//            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-//            String sendDocumentUrl = BASE_URL + SEARCH_BOT_TOKEN_URL + "/sendDocument?chat_id=3728614";
-//            final ResponseEntity<String> response = restTemplate.postForEntity(sendDocumentUrl, requestEntity, String.class);
-//
-//            log.info("RESPONSE: " + response);
-//        } catch (Exception e) {
-//            log.error("Error occurred during rest request to " + chatId + " ERROR: " + e.getMessage());
-//        }
-//    }
-
     @Override
     public void sendMessage(String chatId, String text) {
         final UriComponents uriComponents = uriBuilder()
